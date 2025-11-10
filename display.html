@@ -88,18 +88,16 @@
 
     <script>
         // =========================================================================
-        // === 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                  ===
+        // === PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                     ===
         // =========================================================================
         const firebaseConfig = {
           apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
-          authDomain: "exit-poll-gfx.firebaseapp.com",
-          projectId: "exit-poll-gfx",
-          storageBucket: "exit-poll-gfx.firebasestorage.app",
-          messagingSenderId: "1006050900757",
-          appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
+  authDomain: "exit-poll-gfx.firebaseapp.com",
+  projectId: "exit-poll-gfx",
+  storageBucket: "exit-poll-gfx.firebasestorage.app",
+  messagingSenderId: "1006050900757",
+  appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
         };
-        // =========================================================================
-        // === DO NOT EDIT BELOW THIS LINE                                     ===
         // =========================================================================
 
         firebase.initializeApp(firebaseConfig);
@@ -109,7 +107,7 @@
         const getEl = (id) => document.getElementById(id);
         const defaultData = {
             shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
-            layout1: { isLive: true, mainTitle: "BIHAR ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'NDA', p1: '15', p2: '120', p3: '135'}, { ch: 'MGB', p1: '10', p2: '85', p3: '95'}, { ch: 'LJP', p1: '2', p2: '3', p3: '5'}, { ch: 'OTHERS', p1: '1', p2: '7', p3: '8'}, { ch: 'JDU', p1: '5', p2: '40', p3: '45'}, { ch: 'RJD', p1: '8', p2: '67', p3: '75'} ] },
+            layout1: { mainTitle: "BIHAR ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'NDA', p1: '15', p2: '120', p3: '135'}, { ch: 'MGB', p1: '10', p2: '85', p3: '95'}, { ch: 'LJP', p1: '2', p2: '3', p3: '5'}, { ch: 'OTHERS', p1: '1', p2: '7', p3: '8'}, { ch: 'JDU', p1: '5', p2: '40', p3: '45'}, { ch: 'RJD', p1: '8', p2: '67', p3: '75'} ] },
             layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Today's Chanakya", isLive: true, cards: [ { name: 'NDA', seats: '155', color: '#f39c12' }, { name: 'MGB', seats: '83', color: '#27ae60' }, { name: 'LJP', seats: '0', color: '#3498db' }, { name: 'OTH', seats: '5', color: '#555555' } ] } ] }
         };
 
@@ -136,11 +134,11 @@
 
         function showTablePage(data, page) {
             const tbody = getEl('l1-tbody'), thead = getEl('l1-thead'), container = getEl('display-layout1').querySelector('.carousel-content');
-            const headers = data.headers, start = page * L1_PAGE_SIZE, end = start + L1_PAGE_SIZE, pageRows = data.rows.slice(start, end);
+            const headers = data.headers || {}, start = page * L1_PAGE_SIZE, end = start + L1_PAGE_SIZE, pageRows = (data.rows || []).slice(start, end);
             container.classList.add('fade-out');
             setTimeout(() => {
-                thead.innerHTML = `<tr><th>Party / Alliance</th><th>${headers.h1}</th><th>${headers.h2}</th><th>${headers.h3}</th></tr>`;
-                tbody.innerHTML = pageRows.map(row => `<tr><td>${row.ch}</td><td>${row.p1}</td><td>${row.p2}</td><td>${row.p3}</td></tr>`).join('');
+                thead.innerHTML = `<tr><th>Party / Alliance</th><th>${headers.h1||''}</th><th>${headers.h2||''}</th><th>${headers.h3||''}</th></tr>`;
+                tbody.innerHTML = pageRows.map(row => `<tr><td>${row.ch||''}</td><td>${row.p1||''}</td><td>${row.p2||''}</td><td>${row.p3||''}</td></tr>`).join('');
                 container.classList.remove('fade-out');
             }, 300);
         }
@@ -149,7 +147,7 @@
             clearInterval(intervalVar);
             const numPages = Math.ceil(totalItems / pageSize);
             let currentPage = 0;
-            if (numPages > 0) showPageFn(data, 0); else showPageFn([], 0);
+            if (numPages > 0) showPageFn(data, 0); else showPageFn({headers:{}, rows:[]}, 0);
             if (numPages <= 1) return null;
             return setInterval(() => { currentPage = (currentPage + 1) % numPages; showPageFn(data, currentPage); }, CAROUSEL_SPEED);
         }
@@ -170,18 +168,19 @@
         function updateDisplay(data) {
             if (!data) return;
             const shared = data.shared || {};
+            const l1 = data.layout1 || {};
+            const l2 = data.layout2 || {};
+
             handleBackground(shared.bgVideoUrl, shared.bgColor, shared.bgVideoFile);
             getEl('display-layout1').classList.toggle('hidden', shared.activeLayout !== 'layout1');
             getEl('display-layout2').classList.toggle('hidden', shared.activeLayout !== 'layout2');
 
             if (shared.activeLayout === 'layout1') {
-                const l1 = (data.layout1 && data.layout1.isLive) ? data.layout1 : defaultData.layout1;
                 updateElement('d1-total-seats', shared.totalSeats); updateElement('d1-magic-no', shared.magicNumber);
                 updateElement('d1-main-title', l1.mainTitle); updateElement('d1-subtitle', l1.subtitle);
                 getEl('d1-main-title').style.fontSize = `${shared.l1_titleSize || 2.2}em`; getEl('d1-subtitle').style.fontSize = `${shared.l1_subtitleSize || 1}em`;
-                l1CarouselInterval = startCarousel(l1, l1.rows.length, L1_PAGE_SIZE, l1CarouselInterval, showTablePage);
+                l1CarouselInterval = startCarousel(l1, (l1.rows || []).length, L1_PAGE_SIZE, l1CarouselInterval, showTablePage);
             } else {
-                const l2 = data.layout2 || {};
                 updateElement('d2-total-seats', shared.totalSeats); updateElement('d2-magic-no', shared.magicNumber);
                 const liveSets = (l2.cardSets || []).filter(set => set.isLive);
                 getEl('d2-main-title').style.fontSize = `${shared.l2_titleSize || 2.5}em`; getEl('d2-subtitle').style.fontSize = `${shared.l2_subtitleSize || 1.2}em`;
