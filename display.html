@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broadcast Display (16:9)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anek+Kannada:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-font: 'Anek Kannada', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { display: grid; place-items: center; height: 100vh; background-color: #111; overflow: hidden; font-family: var(--primary-font); }
+        .broadcast-viewport { width: 98vw; max-height: 98vh; aspect-ratio: 16 / 9; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.7); overflow: hidden; }
+        .broadcast-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #fff; font-size: 1.5vw; }
+        .background-media { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; z-index: 1; transform: translate(-50%, -50%); background-color: var(--bg-color, #1a1a1a); }
+        .background-media video, .background-media iframe { width: 100%; height: 100%; object-fit: cover; }
+        .background-media iframe { height: 130%; transform: translateY(-11.5%); }
+        .layout { position: relative; z-index: 2; width: 100%; height: 100%; padding: 2.5%; display: flex; flex-direction: column; gap: 1em; }
+        .hidden { display: none !important; }
+
+        /* Shared Top Info Box */
+        .top-info-bar { display: flex; justify-content: space-between; align-items: center; gap: 1.5em; flex-shrink: 0; }
+        .total-magic-container { display: flex; gap: 1em; }
+        .total-box, .magic-box { padding: 0.5em 1em; border-radius: 0.4em; text-align: center; }
+        .tm-label { font-size: 0.8em; font-weight: 500; display: block; opacity: 0.8; }
+        .tm-number { font-size: 1.8em; font-weight: 800; display: block; }
+        .total-box { background-color: #2c3e50F2; color: #ecf0f1; backdrop-filter: blur(5px); }
+        .magic-box { background-color: #27ae60F2; color: #ffffff; backdrop-filter: blur(5px); }
+        .fade-out { opacity: 0 !important; } .carousel-content { transition: opacity 0.3s ease-in-out; }
+
+        /* --- LAYOUT 1: MODERN TABLE LAYOUT (Styling Updated) --- */
+        .l1-header { text-align: center; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
+        .l1-title-main { font-weight: 800; }
+        .l1-subtitle { font-weight: 500; margin-left: 0.5em; opacity: 0.9; }
+        .l1-subtitle::before { content: '|'; margin-right: 0.5em; font-weight: 300; }
+        .l1-table-container { flex-grow: 1; background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); color: #212529; border-radius: 0.5em; padding: 1.2em; }
+        .l1-table { width: 100%; border-collapse: collapse; }
+        .l1-table th, .l1-table td { padding: 0.2em; text-align: center; }
+        .l1-table thead th { font-size: 1.5em; font-weight: 700; color: #000; padding-bottom: 0.1em; border-bottom: 5px solid #c80815; }
+        .l1-table thead th:first-child, .l1-table tbody td:first-child { text-align: left; }
+        .l1-table tbody tr { font-size: 1.4em; font-weight: 500; border-bottom: 2px solid #c80815; }
+        .l1-table tbody tr:last-child { border-bottom: none; }
+        .l1-table tbody td:first-child { font-weight: 700; }
+
+        /* --- LAYOUT 2: CARDS LAYOUT --- */
+        .l2-header { text-align: center; }
+        .l2-title-main { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
+        .l2-title-subtitle { font-weight: 500; margin-top: 0.2em; text-shadow: 1px 1px 4px rgba(0,0,0,0.5); opacity: 0.9; }
+        .l2-content { flex-grow: 1; display: grid; grid-template-columns: repeat(var(--card-count, 4), 1fr); gap: 1.5em; }
+        .l2-card { background-color: rgba(10, 10, 10, 0.75); border-radius: 0.5em; text-align: center; padding: 1.2em 0.6em; border-top: 0.5em solid; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; }
+        .l2-party-name { font-size: 1.8em; font-weight: 700; text-transform: uppercase; margin-bottom: 0.3em; }
+        .l2-seat-count { font-size: 6em; font-weight: 800; line-height: 1; }
+    </style>
+</head>
+<body>
+    <div class="broadcast-viewport">
+        <div class="background-media" id="background-media">
+            <video id="bg-video" class="hidden" autoplay muted loop playsinline></video>
+            <iframe id="bg-youtube" class="hidden" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+        </div>
+        <div class="broadcast-container">
+            <div id="display-layout1" class="layout hidden">
+                <div class="top-info-bar">
+                    <h1 class="l1-header"><span id="d1-main-title" class="l1-title-main"></span><span id="d1-subtitle" class="l1-subtitle"></span></h1>
+                    <div class="total-magic-container">
+                        <div class="total-box"><span class="tm-label">Total</span><span id="d1-total-seats" class="tm-number"></span></div>
+                        <div class="magic-box"><span class="tm-label">Majority</span><span id="d1-magic-no" class="tm-number"></span></div>
+                    </div>
+                </div>
+                <div class="l1-table-container carousel-content"><table class="l1-table"><thead id="l1-thead"></thead><tbody id="l1-tbody"></tbody></table></div>
+            </div>
+
+            <div id="display-layout2" class="layout hidden">
+                <div class="top-info-bar">
+                     <div class="l2-header"><div id="d2-main-title" class="l2-title-main"></div><div id="d2-subtitle" class="l2-title-subtitle"></div></div>
+                    <div class="total-magic-container">
+                        <div class="total-box"><span class="tm-label">Total</span><span id="d2-total-seats" class="tm-number"></span></div>
+                        <div class="magic-box"><span class="tm-label">Majority</span><span id="d2-magic-no" class="tm-number"></span></div>
+                    </div>
+                </div>
+                <div id="l2-carousel-content" class="l2-content carousel-content"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const getEl = (id) => document.getElementById(id);
+        const defaultData = {
+            shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
+            layout1: { isLive: true, mainTitle: "BIHAR ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'NDA', p1: '15', p2: '120', p3: '135'}, { ch: 'MGB', p1: '10', p2: '85', p3: '95'}, { ch: 'LJP', p1: '2', p2: '3', p3: '5'}, { ch: 'OTHERS', p1: '1', p2: '7', p3: '8'}, { ch: 'JDU', p1: '5', p2: '40', p3: '45'}, { ch: 'RJD', p1: '8', p2: '67', p3: '75'} ] },
+            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Today's Chanakya", isLive: true, cards: [ { name: 'NDA', seats: '155', color: '#f39c12' }, { name: 'MGB', seats: '83', color: '#27ae60' }, { name: 'LJP', seats: '0', color: '#3498db' }, { name: 'OTH', seats: '5', color: '#555555' } ] } ] }
+        };
+
+        let l1CarouselInterval, l2CarouselInterval, currentVideoBlobUrl;
+        const L1_PAGE_SIZE = 5, CAROUSEL_SPEED = 10000;
+
+        function updateElement(id, value) { const el = getEl(id); if (el) el.innerText = value || ''; }
+        
+        function handleBackground(url, color, fileData) {
+            const videoEl = getEl('bg-video'), youtubeEl = getEl('bg-youtube'), container = getEl('background-media');
+            videoEl.classList.add('hidden'); youtubeEl.classList.add('hidden');
+            container.style.backgroundColor = color;
+            if (currentVideoBlobUrl) { URL.revokeObjectURL(currentVideoBlobUrl); currentVideoBlobUrl = null; }
+            let finalUrl = fileData ? URL.createObjectURL(new Blob([Uint8Array.from(atob(fileData.split(',')[1]), c => c.charCodeAt(0))], {type: 'video/mp4'})) : url;
+            if (finalUrl && finalUrl.startsWith('blob:')) currentVideoBlobUrl = finalUrl;
+            if (!finalUrl) { videoEl.src = ''; youtubeEl.src = ''; return; }
+            if (finalUrl.includes('youtube.com') || finalUrl.includes('youtu.be')) {
+                const videoIdMatch = finalUrl.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})(?:\?|&|$)/);
+                if (videoIdMatch) { youtubeEl.src = `https://www.youtube.com/embed/${videoIdMatch[1]}?autoplay=1&mute=1&loop=1&playlist=${videoIdMatch[1]}&controls=0&showinfo=0&autohide=1&modestbranding=1`; youtubeEl.classList.remove('hidden'); }
+            } else if (finalUrl.endsWith('.mp4') || finalUrl.endsWith('.webm') || finalUrl.startsWith('blob:')) {
+                videoEl.src = finalUrl; videoEl.classList.remove('hidden');
+            }
+        }
+
+        function showTablePage(data, page) {
+            const tbody = getEl('l1-tbody'), thead = getEl('l1-thead'), container = getEl('display-layout1').querySelector('.carousel-content');
+            const headers = data.headers, start = page * L1_PAGE_SIZE, end = start + L1_PAGE_SIZE, pageRows = data.rows.slice(start, end);
+            container.classList.add('fade-out');
+            setTimeout(() => {
+                thead.innerHTML = `<tr><th>Party / Alliance</th><th>${headers.h1}</th><th>${headers.h2}</th><th>${headers.h3}</th></tr>`;
+                tbody.innerHTML = pageRows.map(row => `<tr><td>${row.ch}</td><td>${row.p1}</td><td>${row.p2}</td><td>${row.p3}</td></tr>`).join('');
+                container.classList.remove('fade-out');
+            }, 300);
+        }
+
+        function startCarousel(data, totalItems, pageSize, intervalVar, showPageFn) {
+            clearInterval(intervalVar);
+            const numPages = Math.ceil(totalItems / pageSize);
+            let currentPage = 0;
+            if (numPages > 0) showPageFn(data, 0); else showPageFn([], 0);
+            if (numPages <= 1) return null;
+            return setInterval(() => { currentPage = (currentPage + 1) % numPages; showPageFn(data, currentPage); }, CAROUSEL_SPEED);
+        }
+
+        function showCardSet(liveSets, setIndex) {
+            const container = getEl('l2-carousel-content');
+            if (!liveSets || liveSets.length === 0) { container.innerHTML = ''; updateElement('d2-main-title',''); updateElement('d2-subtitle',''); return; }
+            const setData = liveSets[setIndex];
+            container.classList.add('fade-out');
+            setTimeout(() => {
+                updateElement('d2-main-title', setData.title); updateElement('d2-subtitle', setData.subtitle);
+                container.style.setProperty('--card-count', setData.cards.length);
+                container.innerHTML = setData.cards.map(card => `<div class="l2-card" style="border-color: ${card.color};"><h2 class="l2-party-name">${card.name}</h2><p class="l2-seat-count">${card.seats}</p></div>`).join('');
+                container.classList.remove('fade-out');
+            }, 300);
+        }
+
+        function updateDisplay(data) {
+            if (!data) return;
+            const shared = data.shared || {};
+            handleBackground(shared.bgVideoUrl, shared.bgColor, shared.bgVideoFile);
+            getEl('display-layout1').classList.toggle('hidden', shared.activeLayout !== 'layout1');
+            getEl('display-layout2').classList.toggle('hidden', shared.activeLayout !== 'layout2');
+
+            if (shared.activeLayout === 'layout1') {
+                const l1 = (data.layout1 && data.layout1.isLive) ? data.layout1 : defaultData.layout1;
+                updateElement('d1-total-seats', shared.totalSeats); updateElement('d1-magic-no', shared.magicNumber);
+                updateElement('d1-main-title', l1.mainTitle); updateElement('d1-subtitle', l1.subtitle);
+                getEl('d1-main-title').style.fontSize = `${shared.l1_titleSize || 2.2}em`; getEl('d1-subtitle').style.fontSize = `${shared.l1_subtitleSize || 1}em`;
+                l1CarouselInterval = startCarousel(l1, l1.rows.length, L1_PAGE_SIZE, l1CarouselInterval, showTablePage);
+            } else {
+                const l2 = data.layout2 || {};
+                updateElement('d2-total-seats', shared.totalSeats); updateElement('d2-magic-no', shared.magicNumber);
+                const liveSets = (l2.cardSets || []).filter(set => set.isLive);
+                getEl('d2-main-title').style.fontSize = `${shared.l2_titleSize || 2.5}em`; getEl('d2-subtitle').style.fontSize = `${shared.l2_subtitleSize || 1.2}em`;
+                l2CarouselInterval = startCarousel(liveSets, liveSets.length, 1, l2CarouselInterval, (d, i) => showCardSet(d, i));
+            }
+        }
+        
+        window.addEventListener('storage', (e) => { if (e.key === 'broadcastData') updateDisplay(JSON.parse(e.newValue)); });
+        updateDisplay(JSON.parse(localStorage.getItem('broadcastData')) || defaultData);
+    </script>
+</body>
+</html>

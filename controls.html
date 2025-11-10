@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broadcast Controls</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anek+Kannada:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Anek Kannada', sans-serif; background-color: #2c2c2c; color: #f0f0f0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1, h2 { text-align: center; margin-bottom: 20px; font-weight: 700; }
+        fieldset { border: 1px solid #555; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        legend { font-weight: 700; font-size: 1.2em; padding: 0 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .control-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background-color: #3e3e3e; color: #fff; font-size: 1em; }
+        input[type="file"] { padding: 3px; }
+        input[type="number"] { padding-right: 2px; }
+        input[type="color"] { padding: 0; height: 40px; background-color: transparent; }
+        button { padding: 10px 15px; font-size: 1em; font-weight: 700; cursor: pointer; border: none; border-radius: 5px; background-color: #5a5a5a; color: #fff; }
+        .layout-selector button { flex-grow: 1; padding: 15px; font-size: 1.2em; border: 2px solid #555; background-color: #444; }
+        .layout-selector button.active { background-color: #3498db; border-color: #fff; }
+        .hidden { display: none; }
+        .table-row-controls { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
+        .remove-btn { background-color: #c0392b; width: 100%; }
+        .card-set { border: 1px dashed #777; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+        .card-set-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .card-controls { display: grid; grid-template-columns: 1.5fr 1fr 80px; gap: 10px; align-items: center; }
+        .card-management-buttons { display: flex; gap: 10px; margin-top: 10px; }
+        .live-btn { background-color: #e67e22; }
+        .live-btn.active { background-color: #27ae60; box-shadow: 0 0 10px #27ae60; }
+        .go-live-layout-btn { width: 100%; padding: 15px; font-size: 1.3em; background-color: #27ae60; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Broadcast Controls</h1>
+        
+        <fieldset><legend>Global Settings</legend>
+            <div class="grid">
+                <div class="control-group"><label>Background Video URL (YouTube or .mp4)</label><input type="text" id="c-bgVideoUrl"></div>
+                <div class="control-group"><label>OR Upload Local Video</label><input type="file" id="c-bgVideoFile" accept="video/mp4,video/webm"></div>
+                <div class="control-group"><label>Fallback Background Color</label><input type="color" id="c-bgColor"></div>
+                <div class="control-group"><label>Total Seats</label><input type="text" id="c-totalSeats"></div>
+                <div class="control-group"><label>Magic Number</label><input type="text" id="c-magicNumber"></div>
+            </div>
+            <hr style="border-color:#555; margin: 20px 0;">
+            <h3>Edit Layout:</h3>
+            <div class="layout-selector"><button id="select-layout1-btn">Table Layout</button><button id="select-layout2-btn">Card Layout</button></div>
+        </fieldset>
+
+        <div id="controls-layout1" class="hidden">
+            <h2>Table Layout Controls</h2>
+            <fieldset><legend>Titles & Font Sizes (em)</legend>
+                <div class="grid">
+                    <div class="control-group"><label>Main Title</label><input type="text" id="c1-mainTitle"></div>
+                    <div class="control-group"><label>Subtitle</label><input type="text" id="c1-subtitle"></div>
+                    <div class="control-group"><label>Title Size</label><input type="number" id="c1_titleSize" step="0.1"></div>
+                    <div class="control-group"><label>Subtitle Size</label><input type="number" id="c1_subtitleSize" step="0.1"></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Table Data (Rotates every 5 rows)</legend>
+                <div class="table-row-controls" style="grid-template-columns: 2fr 1fr 1fr 1fr 40px;">
+                    <label>Party / Alliance</label><input type="text" id="c1-header1"><input type="text" id="c1-header2"><input type="text" id="c1-header3"><span></span>
+                </div>
+                <div id="table-rows-container"></div><button id="add-row-btn" style="margin-top: 15px;">Add Row</button>
+            </fieldset>
+            <button id="go-live-layout1" class="go-live-layout-btn">Go Live with Table Layout</button>
+        </div>
+        
+        <div id="controls-layout2" class="hidden">
+            <h2>Card Layout Controls</h2>
+             <fieldset><legend>Font Sizes (em)</legend>
+                <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="control-group"><label>Title Size</label><input type="number" id="c2_titleSize" step="0.1"></div>
+                    <div class="control-group"><label>Subtitle Size</label><input type="number" id="c2_subtitleSize" step="0.1"></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Carousel Sets (Only "Live" sets will show)</legend>
+                <div id="card-sets-container"></div>
+                <button id="add-set-btn" style="margin-top: 15px;">Add New Card Set (Clone Last)</button>
+            </fieldset>
+            <button id="go-live-layout2" class="go-live-layout-btn">Go Live with Card Layout</button>
+        </div>
+    </div>
+    
+    <script>
+        const getEl = (id) => document.getElementById(id);
+        let currentVideoFile = null;
+        let isInitialized = false;
+        const defaultData = {
+            shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
+            layout1: { isLive: true, mainTitle: "BIHAR ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'NDA', p1: '15', p2: '120', p3: '135'}, { ch: 'MGB', p1: '10', p2: '85', p3: '95'}, { ch: 'LJP', p1: '2', p2: '3', p3: '5'}, { ch: 'OTHERS', p1: '1', p2: '7', p3: '8'}, { ch: 'JDU', p1: '5', p2: '40', p3: '45'}, { ch: 'RJD', p1: '8', p2: '67', p3: '75'} ] },
+            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Today's Chanakya", isLive: true, cards: [ { name: 'NDA', seats: '155', color: '#f39c12' }, { name: 'MGB', seats: '83', color: '#27ae60' }, { name: 'LJP', seats: '0', color: '#3498db' }, { name: 'OTH', seats: '5', color: '#555555' } ] } ] }
+        };
+
+        function gatherAllData() {
+            const tableRows = Array.from(document.querySelectorAll('#table-rows-container .table-row-controls')).map(row => ({ ch: row.querySelector('.c-ch').value, p1: row.querySelector('.c-p1').value, p2: row.querySelector('.c-p2').value, p3: row.querySelector('.c-p3').value }));
+            const cardSets = Array.from(document.querySelectorAll('#card-sets-container .card-set')).map(setEl => ({
+                title: setEl.querySelector('.c-set-title').value, subtitle: setEl.querySelector('.c-set-subtitle').value, isLive: setEl.querySelector('.live-btn').classList.contains('active'),
+                cards: Array.from(setEl.querySelectorAll('.card-controls')).map(cardEl => ({ name: cardEl.querySelector('.c-card-name').value, seats: cardEl.querySelector('.c-card-seats').value, color: cardEl.querySelector('.c-card-color').value }))
+            }));
+            const existingData = JSON.parse(localStorage.getItem('broadcastData')) || defaultData;
+            const sharedData = { 
+                bgVideoUrl: getEl('c-bgVideoUrl').value, bgColor: getEl('c-bgColor').value, 
+                totalSeats: getEl('c-totalSeats').value, magicNumber: getEl('c-magicNumber').value, 
+                activeLayout: existingData.shared.activeLayout, 
+                l1_titleSize: getEl('c1_titleSize').value, l1_subtitleSize: getEl('c1_subtitleSize').value, 
+                l2_titleSize: getEl('c2_titleSize').value, l2_subtitleSize: getEl('c2_subtitleSize').value 
+            };
+            if(currentVideoFile) sharedData.bgVideoFile = currentVideoFile;
+
+            return {
+                shared: sharedData,
+                layout1: { isLive: false, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows },
+                layout2: { cardSets }
+            };
+        }
+        function saveDataToLocal() { if(isInitialized) localStorage.setItem('broadcastData', JSON.stringify(gatherAllData())); }
+
+        function goLive(layout) {
+            const data = gatherAllData();
+            data.shared.activeLayout = layout;
+            if (layout === 'layout1') data.layout1.isLive = true;
+            localStorage.setItem('broadcastData', JSON.stringify(data));
+        }
+
+        function addTableRow(row = {}) {
+            const container = getEl('table-rows-container');
+            const rowDiv = document.createElement('div'); rowDiv.className = 'table-row-controls';
+            rowDiv.innerHTML = `<input type="text" class="c-ch" value="${row.ch||''}"><input type="text" class="c-p1" value="${row.p1||''}"><input type="text" class="c-p2" value="${row.p2||''}"><input type="text" class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`;
+            container.appendChild(rowDiv);
+            rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); saveDataToLocal(); });
+        }
+        
+        function addCardSet(setData = {}) {
+            const container = getEl('card-sets-container');
+            if (container.children.length >= 10) { alert("Maximum of 10 card sets reached."); return; }
+            const setDiv = document.createElement('fieldset'); setDiv.className = 'card-set';
+            const cards = setData.cards || [{name:'NDA'},{name:'MGB'},{name:'LJP'}];
+            const cardControlsHTML = cards.map(c => `<div class="card-controls"><input type="text" class="c-card-name" value="${c.name||''}"><input type="text" class="c-card-seats" value="${c.seats||'0'}"><input type="color" class="c-card-color" value="${c.color||'#cccccc'}"></div>`).join('');
+            setDiv.innerHTML = `<legend>Set ${container.children.length + 1}</legend>
+                <div class="card-set-header">
+                    <div style="flex-grow:1;"><div class="grid"><div class="control-group"><label>Title</label><input type="text" class="c-set-title" value="${setData.title||''}"></div><div class="control-group"><label>Subtitle</label><input type="text" class="c-set-subtitle" value="${setData.subtitle||''}"></div></div></div>
+                    <button class="live-btn ${setData.isLive ? 'active' : ''}">${setData.isLive ? 'Live' : 'Go Live'}</button>
+                </div>
+                <div class="card-controls-container grid" style="grid-template-columns: 1fr 1fr;">${cardControlsHTML}</div>
+                <div class="card-management-buttons"><button class="add-card">+ Card</button><button class="remove-card">- Card</button><button class="remove-btn">Remove Set</button></div>`;
+            container.appendChild(setDiv);
+            
+            const cardContainer = setDiv.querySelector('.card-controls-container');
+            setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; saveDataToLocal(); } });
+            setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); saveDataToLocal(); } });
+            setDiv.querySelector('.remove-btn').addEventListener('click', () => { setDiv.remove(); saveDataToLocal(); });
+            setDiv.querySelector('.live-btn').addEventListener('click', (e) => { e.target.classList.toggle('active'); e.target.innerText = e.target.classList.contains('active') ? 'Live' : 'Go Live'; saveDataToLocal(); });
+        }
+
+        function loadDataIntoControls(data) {
+            // *** FIX IS HERE: Explicitly load all shared properties, including font sizes ***
+            getEl('c-bgVideoUrl').value = data.shared.bgVideoUrl || '';
+            getEl('c-bgColor').value = data.shared.bgColor || '#1a1a1a';
+            getEl('c-totalSeats').value = data.shared.totalSeats || '0';
+            getEl('c-magicNumber').value = data.shared.magicNumber || '0';
+            getEl('c1_titleSize').value = data.shared.l1_titleSize || 2.2;
+            getEl('c1_subtitleSize').value = data.shared.l1_subtitleSize || 1;
+            getEl('c2_titleSize').value = data.shared.l2_titleSize || 2.5;
+            getEl('c2_subtitleSize').value = data.shared.l2_subtitleSize || 1.2;
+
+            Object.keys(data.layout1).forEach(key => { if(typeof data.layout1[key] !== 'object' && getEl(`c1-${key}`)) getEl(`c1-${key}`).value = data.layout1[key]; });
+            if(data.layout1.headers) Object.keys(data.layout1.headers).forEach(key => getEl(`c1-header${key.substring(1)}`).value = data.layout1.headers[key]);
+            getEl('table-rows-container').innerHTML = ''; (data.layout1.rows || []).forEach(row => addTableRow(row));
+            getEl('card-sets-container').innerHTML = ''; (data.layout2.cardSets || []).forEach(set => addCardSet(set));
+            switchLayout(JSON.parse(localStorage.getItem('controlPanelLayout')) || 'layout1');
+        }
+
+        function switchLayout(layoutToShow) {
+            getEl('select-layout1-btn').classList.toggle('active', layoutToShow === 'layout1'); getEl('controls-layout1').classList.toggle('hidden', layoutToShow !== 'layout1');
+            getEl('select-layout2-btn').classList.toggle('active', layoutToShow !== 'layout1'); getEl('controls-layout2').classList.toggle('hidden', layoutToShow === 'layout1');
+            localStorage.setItem('controlPanelLayout', layoutToShow);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            getEl('add-row-btn').addEventListener('click', () => { addTableRow(); saveDataToLocal(); });
+            getEl('add-set-btn').addEventListener('click', () => { const allData = gatherAllData(); const lastSet = allData.layout2.cardSets.slice(-1)[0]; addCardSet(lastSet); saveDataToLocal(); });
+            getEl('select-layout1-btn').addEventListener('click', () => switchLayout('layout1'));
+            getEl('select-layout2-btn').addEventListener('click', () => switchLayout('layout2'));
+            getEl('go-live-layout1').addEventListener('click', () => goLive('layout1'));
+            getEl('go-live-layout2').addEventListener('click', () => goLive('layout2'));
+            getEl('c-bgVideoFile').addEventListener('change', (e) => {
+                const file = e.target.files[0]; if(!file) return;
+                getEl('c-bgVideoUrl').value = ''; 
+                const reader = new FileReader();
+                reader.onload = (event) => { currentVideoFile = event.target.result; saveDataToLocal(); };
+                reader.readAsDataURL(file);
+            });
+            
+            document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') saveDataToLocal(); });
+            const initialData = JSON.parse(localStorage.getItem('broadcastData')) || defaultData;
+            loadDataIntoControls(initialData); 
+            isInitialized = true;
+            saveDataToLocal();
+        });
+    </script>
+</body>
+</html>
