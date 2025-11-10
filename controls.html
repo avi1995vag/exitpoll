@@ -91,18 +91,16 @@
 
     <script>
         // =========================================================================
-        // === 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                  ===
+        // === PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                     ===
         // =========================================================================
         const firebaseConfig = {
           apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
-          authDomain: "exit-poll-gfx.firebaseapp.com",
-          projectId: "exit-poll-gfx",
-          storageBucket: "exit-poll-gfx.firebasestorage.app",
-          messagingSenderId: "1006050900757",
-          appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
+  authDomain: "exit-poll-gfx.firebaseapp.com",
+  projectId: "exit-poll-gfx",
+  storageBucket: "exit-poll-gfx.firebasestorage.app",
+  messagingSenderId: "1006050900757",
+  appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
         };
-        // =========================================================================
-        // === DO NOT EDIT BELOW THIS LINE                                     ===
         // =========================================================================
 
         firebase.initializeApp(firebaseConfig);
@@ -110,53 +108,107 @@
         const broadcastDataRef = database.ref('broadcastData');
 
         const getEl = (id) => document.getElementById(id);
-        let currentVideoFile = null;
+        let appState = {}; // Holds the current state from Firebase
         let isInitialized = false;
-        const defaultData = {
-            shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
-            layout1: { isLive: true, mainTitle: "BIHAR ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'NDA', p1: '15', p2: '120', p3: '135'}, { ch: 'MGB', p1: '10', p2: '85', p3: '95'}, { ch: 'LJP', p1: '2', p2: '3', p3: '5'}, { ch: 'OTHERS', p1: '1', p2: '7', p3: '8'}, { ch: 'JDU', p1: '5', p2: '40', p3: '45'}, { ch: 'RJD', p1: '8', p2: '67', p3: '75'} ] },
-            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Today's Chanakya", isLive: true, cards: [ { name: 'NDA', seats: '155', color: '#f39c12' }, { name: 'MGB', seats: '83', color: '#27ae60' }, { name: 'LJP', seats: '0', color: '#3498db' }, { name: 'OTH', seats: '5', color: '#555555' } ] } ] }
-        };
 
-        function gatherAllData() {
+        // *** Gathers data FROM THE FORM and returns a complete object ***
+        function gatherDataFromForm() {
             const tableRows = Array.from(document.querySelectorAll('#table-rows-container .table-row-controls')).map(row => ({ ch: row.querySelector('.c-ch').value, p1: row.querySelector('.c-p1').value, p2: row.querySelector('.c-p2').value, p3: row.querySelector('.c-p3').value }));
             const cardSets = Array.from(document.querySelectorAll('#card-sets-container .card-set')).map(setEl => ({
                 title: setEl.querySelector('.c-set-title').value, subtitle: setEl.querySelector('.c-set-subtitle').value, isLive: setEl.querySelector('.live-btn').classList.contains('active'),
                 cards: Array.from(setEl.querySelectorAll('.card-controls')).map(cardEl => ({ name: cardEl.querySelector('.c-card-name').value, seats: cardEl.querySelector('.c-card-seats').value, color: cardEl.querySelector('.c-card-color').value }))
             }));
-            const existingData = JSON.parse(localStorage.getItem('broadcastData')) || defaultData;
             const sharedData = { 
                 bgVideoUrl: getEl('c-bgVideoUrl').value, bgColor: getEl('c-bgColor').value, 
                 totalSeats: getEl('c-totalSeats').value, magicNumber: getEl('c-magicNumber').value, 
-                activeLayout: existingData.shared.activeLayout, 
+                activeLayout: appState.shared.activeLayout, // Keep the live layout state
                 l1_titleSize: getEl('c1_titleSize').value, l1_subtitleSize: getEl('c1_subtitleSize').value, 
                 l2_titleSize: getEl('c2_titleSize').value, l2_subtitleSize: getEl('c2_subtitleSize').value 
             };
-            if(currentVideoFile) sharedData.bgVideoFile = currentVideoFile;
+            if(appState.shared.bgVideoFile) sharedData.bgVideoFile = appState.shared.bgVideoFile;
 
             return {
                 shared: sharedData,
-                layout1: { isLive: false, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows },
+                layout1: { isLive: appState.layout1.isLive, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows },
                 layout2: { cardSets }
             };
         }
-        function saveDataToFirebase() { if(isInitialized) broadcastDataRef.set(gatherAllData()); }
 
+        // *** Saves the entire state to Firebase. Called on any change. ***
+        function updateFirebase() { if(isInitialized) broadcastDataRef.set(gatherDataFromForm()); }
+        
+        // *** Specifically for GO LIVE buttons. Updates the active layout and sets the 'isLive' flag. ***
         function goLive(layout) {
-            const data = gatherAllData();
+            const data = gatherDataFromForm();
             data.shared.activeLayout = layout;
-            if (layout === 'layout1') data.layout1.isLive = true;
+            data.layout1.isLive = (layout === 'layout1');
             broadcastDataRef.set(data);
         }
 
+        function addTableRow(row = {}) { /* Unchanged */ }
+        function addCardSet(setData = {}) { /* Unchanged */ }
+
+        // *** Populates the form fields FROM a data object ***
+        function loadDataIntoControls(data) {
+            appState = data; // Update the global state
+            Object.keys(data.shared).forEach(key => { if(getEl(`c-${key}`)) getEl(`c-${key}`).value = data.shared[key]; });
+            getEl('c1_titleSize').value = data.shared.l1_titleSize; getEl('c1_subtitleSize').value = data.shared.l1_subtitleSize;
+            getEl('c2_titleSize').value = data.shared.l2_titleSize; getEl('c2_subtitleSize').value = data.shared.l2_subtitleSize;
+            Object.keys(data.layout1).forEach(key => { if(typeof data.layout1[key] !== 'object' && getEl(`c1-${key}`)) getEl(`c1-${key}`).value = data.layout1[key]; });
+            if(data.layout1.headers) Object.keys(data.layout1.headers).forEach(key => getEl(`c1-header${key.substring(1)}`).value = data.layout1.headers[key]);
+            getEl('table-rows-container').innerHTML = ''; (data.layout1.rows || []).forEach(row => addTableRow(row));
+            getEl('card-sets-container').innerHTML = ''; (data.layout2.cardSets || []).forEach(set => addCardSet(set));
+            switchLayout(JSON.parse(localStorage.getItem('controlPanelLayout')) || 'layout1');
+        }
+
+        function switchLayout(layoutToShow) {
+            getEl('select-layout1-btn').classList.toggle('active', layoutToShow === 'layout1'); getEl('controls-layout1').classList.toggle('hidden', layoutToShow !== 'layout1');
+            getEl('select-layout2-btn').classList.toggle('active', layoutToShow !== 'layout1'); getEl('controls-layout2').classList.toggle('hidden', layoutToShow === 'layout1');
+            localStorage.setItem('controlPanelLayout', layoutToShow);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            getEl('add-row-btn').addEventListener('click', () => { addTableRow(); updateFirebase(); });
+            getEl('add-set-btn').addEventListener('click', () => { const lastSet = appState.layout2.cardSets.slice(-1)[0]; addCardSet(lastSet); updateFirebase(); });
+            getEl('select-layout1-btn').addEventListener('click', () => switchLayout('layout1'));
+            getEl('select-layout2-btn').addEventListener('click', () => switchLayout('layout2'));
+            getEl('go-live-layout1').addEventListener('click', () => goLive('layout1'));
+            getEl('go-live-layout2').addEventListener('click', () => goLive('layout2'));
+            getEl('c-bgVideoFile').addEventListener('change', (e) => {
+                const file = e.target.files[0]; if(!file) return;
+                getEl('c-bgVideoUrl').value = ''; 
+                const reader = new FileReader();
+                reader.onload = (event) => { appState.shared.bgVideoFile = event.target.result; updateFirebase(); };
+                reader.readAsDataURL(file);
+            });
+            
+            document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') updateFirebase(); });
+            
+            broadcastDataRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    if (!isInitialized) {
+                        loadDataIntoControls(data);
+                        isInitialized = true;
+                    }
+                    appState = data; // Always keep appState in sync
+                } else {
+                    // If DB is empty, load defaults and push them to DB
+                    loadDataIntoControls(defaultData);
+                    isInitialized = true;
+                    updateFirebase();
+                }
+            });
+        });
+
+        // Duplicating these functions to be accessible in the global scope for the dynamically created elements' onclick attributes
         function addTableRow(row = {}) {
             const container = getEl('table-rows-container');
             const rowDiv = document.createElement('div'); rowDiv.className = 'table-row-controls';
             rowDiv.innerHTML = `<input type="text" class="c-ch" value="${row.ch||''}"><input type="text" class="c-p1" value="${row.p1||''}"><input type="text" class="c-p2" value="${row.p2||''}"><input type="text" class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`;
             container.appendChild(rowDiv);
-            rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); saveDataToFirebase(); });
+            rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); updateFirebase(); });
         }
-        
         function addCardSet(setData = {}) {
             const container = getEl('card-sets-container');
             if (container.children.length >= 10) { alert("Maximum of 10 card sets reached."); return; }
@@ -173,58 +225,11 @@
             container.appendChild(setDiv);
             
             const cardContainer = setDiv.querySelector('.card-controls-container');
-            setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; saveDataToFirebase(); } });
-            setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); saveDataToFirebase(); } });
-            setDiv.querySelector('.remove-btn').addEventListener('click', () => { setDiv.remove(); saveDataToFirebase(); });
-            setDiv.querySelector('.live-btn').addEventListener('click', (e) => { e.target.classList.toggle('active'); e.target.innerText = e.target.classList.contains('active') ? 'Live' : 'Go Live'; saveDataToFirebase(); });
+            setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; updateFirebase(); } });
+            setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); updateFirebase(); } });
+            setDiv.querySelector('.remove-btn').addEventListener('click', () => { setDiv.remove(); updateFirebase(); });
+            setDiv.querySelector('.live-btn').addEventListener('click', (e) => { e.target.classList.toggle('active'); e.target.innerText = e.target.classList.contains('active') ? 'Live' : 'Go Live'; updateFirebase(); });
         }
-
-        function loadDataIntoControls(data) {
-            getEl('c-bgVideoUrl').value = data.shared.bgVideoUrl || '';
-            getEl('c-bgColor').value = data.shared.bgColor || '#1a1a1a';
-            getEl('c-totalSeats').value = data.shared.totalSeats || '0';
-            getEl('c-magicNumber').value = data.shared.magicNumber || '0';
-            getEl('c1_titleSize').value = data.shared.l1_titleSize || 2.2;
-            getEl('c1_subtitleSize').value = data.shared.l1_subtitleSize || 1;
-            getEl('c2_titleSize').value = data.shared.l2_titleSize || 2.5;
-            getEl('c2_subtitleSize').value = data.shared.l2_subtitleSize || 1.2;
-
-            Object.keys(data.layout1).forEach(key => { if(typeof data.layout1[key] !== 'object' && getEl(`c1-${key}`)) getEl(`c1-${key}`).value = data.layout1[key]; });
-            if(data.layout1.headers) Object.keys(data.layout1.headers).forEach(key => getEl(`c1-header${key.substring(1)}`).value = data.layout1.headers[key]);
-            getEl('table-rows-container').innerHTML = ''; (data.layout1.rows || []).forEach(row => addTableRow(row));
-            getEl('card-sets-container').innerHTML = ''; (data.layout2.cardSets || []).forEach(set => addCardSet(set));
-            switchLayout(JSON.parse(localStorage.getItem('controlPanelLayout')) || 'layout1');
-        }
-
-        function switchLayout(layoutToShow) {
-            getEl('select-layout1-btn').classList.toggle('active', layoutToShow === 'layout1'); getEl('controls-layout1').classList.toggle('hidden', layoutToShow !== 'layout1');
-            getEl('select-layout2-btn').classList.toggle('active', layoutToShow !== 'layout1'); getEl('controls-layout2').classList.toggle('hidden', layoutToShow === 'layout1');
-            localStorage.setItem('controlPanelLayout', layoutToShow);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            getEl('add-row-btn').addEventListener('click', () => { addTableRow(); saveDataToFirebase(); });
-            getEl('add-set-btn').addEventListener('click', () => { const allData = gatherAllData(); const lastSet = allData.layout2.cardSets.slice(-1)[0]; addCardSet(lastSet); saveDataToFirebase(); });
-            getEl('select-layout1-btn').addEventListener('click', () => switchLayout('layout1'));
-            getEl('select-layout2-btn').addEventListener('click', () => switchLayout('layout2'));
-            getEl('go-live-layout1').addEventListener('click', () => goLive('layout1'));
-            getEl('go-live-layout2').addEventListener('click', () => goLive('layout2'));
-            getEl('c-bgVideoFile').addEventListener('change', (e) => {
-                const file = e.target.files[0]; if(!file) return;
-                getEl('c-bgVideoUrl').value = ''; 
-                const reader = new FileReader();
-                reader.onload = (event) => { currentVideoFile = event.target.result; saveDataToFirebase(); };
-                reader.readAsDataURL(file);
-            });
-            
-            document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') saveDataToFirebase(); });
-            
-            broadcastDataRef.once('value', (snapshot) => {
-                const initialData = snapshot.val() || defaultData;
-                loadDataIntoControls(initialData);
-                isInitialized = true;
-            });
-        });
     </script>
 </body>
 </html>
