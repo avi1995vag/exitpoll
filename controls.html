@@ -85,7 +85,30 @@
         </div>
     </div>
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
+        // =========================================================================
+        // === 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                  ===
+        // =========================================================================
+        const firebaseConfig = {
+          apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
+          authDomain: "exit-poll-gfx.firebaseapp.com",
+          projectId: "exit-poll-gfx",
+          storageBucket: "exit-poll-gfx.firebasestorage.app",
+          messagingSenderId: "1006050900757",
+          appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
+        };
+        // =========================================================================
+        // === DO NOT EDIT BELOW THIS LINE                                     ===
+        // =========================================================================
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const broadcastDataRef = database.ref('broadcastData');
+
         const getEl = (id) => document.getElementById(id);
         let currentVideoFile = null;
         let isInitialized = false;
@@ -117,13 +140,13 @@
                 layout2: { cardSets }
             };
         }
-        function saveDataToLocal() { if(isInitialized) localStorage.setItem('broadcastData', JSON.stringify(gatherAllData())); }
+        function saveDataToFirebase() { if(isInitialized) broadcastDataRef.set(gatherAllData()); }
 
         function goLive(layout) {
             const data = gatherAllData();
             data.shared.activeLayout = layout;
             if (layout === 'layout1') data.layout1.isLive = true;
-            localStorage.setItem('broadcastData', JSON.stringify(data));
+            broadcastDataRef.set(data);
         }
 
         function addTableRow(row = {}) {
@@ -131,7 +154,7 @@
             const rowDiv = document.createElement('div'); rowDiv.className = 'table-row-controls';
             rowDiv.innerHTML = `<input type="text" class="c-ch" value="${row.ch||''}"><input type="text" class="c-p1" value="${row.p1||''}"><input type="text" class="c-p2" value="${row.p2||''}"><input type="text" class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`;
             container.appendChild(rowDiv);
-            rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); saveDataToLocal(); });
+            rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); saveDataToFirebase(); });
         }
         
         function addCardSet(setData = {}) {
@@ -150,14 +173,13 @@
             container.appendChild(setDiv);
             
             const cardContainer = setDiv.querySelector('.card-controls-container');
-            setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; saveDataToLocal(); } });
-            setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); saveDataToLocal(); } });
-            setDiv.querySelector('.remove-btn').addEventListener('click', () => { setDiv.remove(); saveDataToLocal(); });
-            setDiv.querySelector('.live-btn').addEventListener('click', (e) => { e.target.classList.toggle('active'); e.target.innerText = e.target.classList.contains('active') ? 'Live' : 'Go Live'; saveDataToLocal(); });
+            setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; saveDataToFirebase(); } });
+            setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); saveDataToFirebase(); } });
+            setDiv.querySelector('.remove-btn').addEventListener('click', () => { setDiv.remove(); saveDataToFirebase(); });
+            setDiv.querySelector('.live-btn').addEventListener('click', (e) => { e.target.classList.toggle('active'); e.target.innerText = e.target.classList.contains('active') ? 'Live' : 'Go Live'; saveDataToFirebase(); });
         }
 
         function loadDataIntoControls(data) {
-            // *** FIX IS HERE: Explicitly load all shared properties, including font sizes ***
             getEl('c-bgVideoUrl').value = data.shared.bgVideoUrl || '';
             getEl('c-bgColor').value = data.shared.bgColor || '#1a1a1a';
             getEl('c-totalSeats').value = data.shared.totalSeats || '0';
@@ -181,8 +203,8 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            getEl('add-row-btn').addEventListener('click', () => { addTableRow(); saveDataToLocal(); });
-            getEl('add-set-btn').addEventListener('click', () => { const allData = gatherAllData(); const lastSet = allData.layout2.cardSets.slice(-1)[0]; addCardSet(lastSet); saveDataToLocal(); });
+            getEl('add-row-btn').addEventListener('click', () => { addTableRow(); saveDataToFirebase(); });
+            getEl('add-set-btn').addEventListener('click', () => { const allData = gatherAllData(); const lastSet = allData.layout2.cardSets.slice(-1)[0]; addCardSet(lastSet); saveDataToFirebase(); });
             getEl('select-layout1-btn').addEventListener('click', () => switchLayout('layout1'));
             getEl('select-layout2-btn').addEventListener('click', () => switchLayout('layout2'));
             getEl('go-live-layout1').addEventListener('click', () => goLive('layout1'));
@@ -191,15 +213,17 @@
                 const file = e.target.files[0]; if(!file) return;
                 getEl('c-bgVideoUrl').value = ''; 
                 const reader = new FileReader();
-                reader.onload = (event) => { currentVideoFile = event.target.result; saveDataToLocal(); };
+                reader.onload = (event) => { currentVideoFile = event.target.result; saveDataToFirebase(); };
                 reader.readAsDataURL(file);
             });
             
-            document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') saveDataToLocal(); });
-            const initialData = JSON.parse(localStorage.getItem('broadcastData')) || defaultData;
-            loadDataIntoControls(initialData); 
-            isInitialized = true;
-            saveDataToLocal();
+            document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') saveDataToFirebase(); });
+            
+            broadcastDataRef.once('value', (snapshot) => {
+                const initialData = snapshot.val() || defaultData;
+                loadDataIntoControls(initialData);
+                isInitialized = true;
+            });
         });
     </script>
 </body>
