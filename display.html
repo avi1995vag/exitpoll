@@ -34,10 +34,10 @@
         .l1-subtitle::before { content: '|'; margin-right: 0.5em; font-weight: 300; }
         .l1-table-container { flex-grow: 1; background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); color: #212529; border-radius: 0.5em; padding: 1.2em; }
         .l1-table { width: 100%; border-collapse: collapse; }
-        .l1-table th, .l1-table td { padding: 0.2em; text-align: center; }
-        .l1-table thead th { font-size: 1.5em; font-weight: 700; color: #000; padding-bottom: 0.1em; border-bottom: 5px solid #c80815; }
+        .l1-table th, .l1-table td { padding: 0.4em; text-align: center; }
+        .l1-table thead th { font-size: 1.2em; font-weight: 700; color: #000; padding-bottom: 0.6em; border-bottom: 2px solid #adb5bd; }
         .l1-table thead th:first-child, .l1-table tbody td:first-child { text-align: left; }
-        .l1-table tbody tr { font-size: 1.4em; font-weight: 500; border-bottom: 2px solid #c80815; }
+        .l1-table tbody tr { font-size: 1.1em; font-weight: 500; border-bottom: 1px solid #ced4da; }
         .l1-table tbody tr:last-child { border-bottom: none; }
         .l1-table tbody td:first-child { font-weight: 700; }
 
@@ -82,7 +82,30 @@
         </div>
     </div>
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
+        // =========================================================================
+        // === 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                  ===
+        // =========================================================================
+        const firebaseConfig = {
+          apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
+          authDomain: "exit-poll-gfx.firebaseapp.com",
+          projectId: "exit-poll-gfx",
+          storageBucket: "exit-poll-gfx.firebasestorage.app",
+          messagingSenderId: "1006050900757",
+          appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
+        };
+        // =========================================================================
+        // === DO NOT EDIT BELOW THIS LINE                                     ===
+        // =========================================================================
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const broadcastDataRef = database.ref('broadcastData');
+        
         const getEl = (id) => document.getElementById(id);
         const defaultData = {
             shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
@@ -166,8 +189,10 @@
             }
         }
         
-        window.addEventListener('storage', (e) => { if (e.key === 'broadcastData') updateDisplay(JSON.parse(e.newValue)); });
-        updateDisplay(JSON.parse(localStorage.getItem('broadcastData')) || defaultData);
+        broadcastDataRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            updateDisplay(data || defaultData);
+        });
     </script>
 </body>
 </html>
