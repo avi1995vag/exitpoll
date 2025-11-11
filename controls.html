@@ -108,10 +108,9 @@
         const broadcastDataRef = database.ref('broadcastData');
 
         const getEl = (id) => document.getElementById(id);
-        let appState = {}; // Holds the current state from Firebase
+        let currentData = {}; // This will always hold the latest data from Firebase.
         let isInitialized = false;
 
-        // *** Gathers data FROM THE FORM and returns a complete object ***
         function gatherDataFromForm() {
             const tableRows = Array.from(document.querySelectorAll('#table-rows-container .table-row-controls')).map(row => ({ ch: row.querySelector('.c-ch').value, p1: row.querySelector('.c-p1').value, p2: row.querySelector('.c-p2').value, p3: row.querySelector('.c-p3').value }));
             const cardSets = Array.from(document.querySelectorAll('#card-sets-container .card-set')).map(setEl => ({
@@ -121,37 +120,27 @@
             const sharedData = { 
                 bgVideoUrl: getEl('c-bgVideoUrl').value, bgColor: getEl('c-bgColor').value, 
                 totalSeats: getEl('c-totalSeats').value, magicNumber: getEl('c-magicNumber').value, 
-                activeLayout: appState.shared.activeLayout, // Keep the live layout state
+                activeLayout: currentData.shared.activeLayout, // IMPORTANT: Keep the currently live layout
                 l1_titleSize: getEl('c1_titleSize').value, l1_subtitleSize: getEl('c1_subtitleSize').value, 
                 l2_titleSize: getEl('c2_titleSize').value, l2_subtitleSize: getEl('c2_subtitleSize').value 
             };
-            if(appState.shared.bgVideoFile) sharedData.bgVideoFile = appState.shared.bgVideoFile;
+            if(currentData.shared.bgVideoFile) sharedData.bgVideoFile = currentData.shared.bgVideoFile;
 
-            return {
-                shared: sharedData,
-                layout1: { isLive: appState.layout1.isLive, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows },
-                layout2: { cardSets }
-            };
+            return { shared: sharedData, layout1: { ...currentData.layout1, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows }, layout2: { cardSets } };
         }
 
-        // *** Saves the entire state to Firebase. Called on any change. ***
         function updateFirebase() { if(isInitialized) broadcastDataRef.set(gatherDataFromForm()); }
         
-        // *** Specifically for GO LIVE buttons. Updates the active layout and sets the 'isLive' flag. ***
         function goLive(layout) {
-            const data = gatherDataFromForm();
-            data.shared.activeLayout = layout;
-            data.layout1.isLive = (layout === 'layout1');
-            broadcastDataRef.set(data);
+            broadcastDataRef.child('shared/activeLayout').set(layout);
         }
 
         function addTableRow(row = {}) { /* Unchanged */ }
         function addCardSet(setData = {}) { /* Unchanged */ }
 
-        // *** Populates the form fields FROM a data object ***
         function loadDataIntoControls(data) {
-            appState = data; // Update the global state
-            Object.keys(data.shared).forEach(key => { if(getEl(`c-${key}`)) getEl(`c-${key}`).value = data.shared[key]; });
+            currentData = data; // Update the global state
+            Object.keys(data.shared).forEach(key => { const el = getEl(`c-${key}`); if(el) el.value = data.shared[key]; });
             getEl('c1_titleSize').value = data.shared.l1_titleSize; getEl('c1_subtitleSize').value = data.shared.l1_subtitleSize;
             getEl('c2_titleSize').value = data.shared.l2_titleSize; getEl('c2_subtitleSize').value = data.shared.l2_subtitleSize;
             Object.keys(data.layout1).forEach(key => { if(typeof data.layout1[key] !== 'object' && getEl(`c1-${key}`)) getEl(`c1-${key}`).value = data.layout1[key]; });
@@ -169,7 +158,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             getEl('add-row-btn').addEventListener('click', () => { addTableRow(); updateFirebase(); });
-            getEl('add-set-btn').addEventListener('click', () => { const lastSet = appState.layout2.cardSets.slice(-1)[0]; addCardSet(lastSet); updateFirebase(); });
+            getEl('add-set-btn').addEventListener('click', () => { const lastSet = (currentData.layout2.cardSets || []).slice(-1)[0]; addCardSet(lastSet); updateFirebase(); });
             getEl('select-layout1-btn').addEventListener('click', () => switchLayout('layout1'));
             getEl('select-layout2-btn').addEventListener('click', () => switchLayout('layout2'));
             getEl('go-live-layout1').addEventListener('click', () => goLive('layout1'));
@@ -178,52 +167,42 @@
                 const file = e.target.files[0]; if(!file) return;
                 getEl('c-bgVideoUrl').value = ''; 
                 const reader = new FileReader();
-                reader.onload = (event) => { appState.shared.bgVideoFile = event.target.result; updateFirebase(); };
+                reader.onload = (event) => { broadcastDataRef.child('shared/bgVideoFile').set(event.target.result); };
                 reader.readAsDataURL(file);
             });
             
             document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') updateFirebase(); });
             
             broadcastDataRef.on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
+                const dataFromDb = snapshot.val();
+                if (dataFromDb) {
+                    currentData = dataFromDb; // Always keep state in sync
                     if (!isInitialized) {
-                        loadDataIntoControls(data);
+                        loadDataIntoControls(dataFromDb);
                         isInitialized = true;
                     }
-                    appState = data; // Always keep appState in sync
-                } else {
-                    // If DB is empty, load defaults and push them to DB
-                    loadDataIntoControls(defaultData);
+                } else { // If DB is empty, load defaults and push them to DB
                     isInitialized = true;
+                    loadDataIntoControls(defaultData);
                     updateFirebase();
                 }
             });
         });
-
-        // Duplicating these functions to be accessible in the global scope for the dynamically created elements' onclick attributes
+        
         function addTableRow(row = {}) {
-            const container = getEl('table-rows-container');
-            const rowDiv = document.createElement('div'); rowDiv.className = 'table-row-controls';
+            const container = getEl('table-rows-container'); const rowDiv = document.createElement('div'); rowDiv.className = 'table-row-controls';
             rowDiv.innerHTML = `<input type="text" class="c-ch" value="${row.ch||''}"><input type="text" class="c-p1" value="${row.p1||''}"><input type="text" class="c-p2" value="${row.p2||''}"><input type="text" class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`;
-            container.appendChild(rowDiv);
-            rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); updateFirebase(); });
+            container.appendChild(rowDiv); rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); updateFirebase(); });
         }
         function addCardSet(setData = {}) {
-            const container = getEl('card-sets-container');
-            if (container.children.length >= 10) { alert("Maximum of 10 card sets reached."); return; }
-            const setDiv = document.createElement('fieldset'); setDiv.className = 'card-set';
-            const cards = setData.cards || [{name:'NDA'},{name:'MGB'},{name:'LJP'}];
+            const container = getEl('card-sets-container'); if (container.children.length >= 10) { alert("Max 10 sets."); return; }
+            const setDiv = document.createElement('fieldset'); setDiv.className = 'card-set'; const cards = setData.cards || [{name:'NDA'},{name:'MGB'},{name:'LJP'}];
             const cardControlsHTML = cards.map(c => `<div class="card-controls"><input type="text" class="c-card-name" value="${c.name||''}"><input type="text" class="c-card-seats" value="${c.seats||'0'}"><input type="color" class="c-card-color" value="${c.color||'#cccccc'}"></div>`).join('');
             setDiv.innerHTML = `<legend>Set ${container.children.length + 1}</legend>
-                <div class="card-set-header">
-                    <div style="flex-grow:1;"><div class="grid"><div class="control-group"><label>Title</label><input type="text" class="c-set-title" value="${setData.title||''}"></div><div class="control-group"><label>Subtitle</label><input type="text" class="c-set-subtitle" value="${setData.subtitle||''}"></div></div></div>
-                    <button class="live-btn ${setData.isLive ? 'active' : ''}">${setData.isLive ? 'Live' : 'Go Live'}</button>
-                </div>
+                <div class="card-set-header"><div style="flex-grow:1;"><div class="grid"><div class="control-group"><label>Title</label><input type="text" class="c-set-title" value="${setData.title||''}"></div><div class="control-group"><label>Subtitle</label><input type="text" class="c-set-subtitle" value="${setData.subtitle||''}"></div></div></div><button class="live-btn ${setData.isLive ? 'active' : ''}">${setData.isLive ? 'Live' : 'Go Live'}</button></div>
                 <div class="card-controls-container grid" style="grid-template-columns: 1fr 1fr;">${cardControlsHTML}</div>
                 <div class="card-management-buttons"><button class="add-card">+ Card</button><button class="remove-card">- Card</button><button class="remove-btn">Remove Set</button></div>`;
             container.appendChild(setDiv);
-            
             const cardContainer = setDiv.querySelector('.card-controls-container');
             setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; updateFirebase(); } });
             setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); updateFirebase(); } });
