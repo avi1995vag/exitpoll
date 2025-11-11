@@ -130,12 +130,14 @@
             return { shared: sharedData, layout1: { ...appState.layout1, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows }, layout2: { cardSets } };
         }
 
-        // *** Saves the entire state to Firebase. Called on any change. ***
+        // *** Saves the entire state to Firebase. ONLY called by intentional actions. ***
         function updateFirebase() { if(isInitialized) broadcastDataRef.set(gatherDataFromForm()); }
         
-        // *** Specifically for GO LIVE buttons. Updates the active layout. ***
+        // *** Specifically for GO LIVE buttons. Updates everything AND the active layout. ***
         function goLive(layout) {
-            broadcastDataRef.child('shared/activeLayout').set(layout);
+            const data = gatherDataFromForm();
+            data.shared.activeLayout = layout;
+            broadcastDataRef.set(data);
         }
 
         // *** Populates the form fields FROM a data object ***
@@ -178,7 +180,7 @@
             getEl('controls-layout1').classList.toggle('hidden', layoutToShow !== 'layout1');
             getEl('select-layout2-btn').classList.toggle('active', layoutToShow !== 'layout1');
             getEl('controls-layout2').classList.toggle('hidden', layoutToShow === 'layout1');
-            localStorage.setItem('controlPanelLayout', JSON.stringify(layoutToShow));
+            localStorage.setItem('controlPanelLayout', layoutToShow);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -197,17 +199,15 @@
                 reader.readAsDataURL(file);
             });
             
-            document.body.addEventListener('input', (e) => { if(e.target.id !== 'c-bgVideoFile') updateFirebase(); });
-            
             broadcastDataRef.on('value', (snapshot) => {
                 const dataFromDb = snapshot.val();
                 if (dataFromDb) {
-                    if (!isInitialized) { // First time load
+                    if (!isInitialized) {
                         loadDataIntoControls(dataFromDb);
                         isInitialized = true;
                     }
-                    appState = dataFromDb; // Always keep a fresh copy of the state
-                } else { // If DB is empty, load defaults and push them to DB
+                    appState = dataFromDb;
+                } else {
                     isInitialized = true;
                     loadDataIntoControls(defaultData);
                     updateFirebase();
