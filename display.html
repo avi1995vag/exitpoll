@@ -8,8 +8,8 @@
     <style>
         :root { --primary-font: 'Anek Kannada', sans-serif; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { display: grid; place-items: center; height: 100vh; background-color: #111; overflow: hidden; font-family: var(--primary-font); }
-        .broadcast-viewport { width: 98vw; max-height: 98vh; aspect-ratio: 16 / 9; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.7); overflow: hidden; }
+        body { background-color: #000; overflow: hidden; font-family: var(--primary-font); }
+        .broadcast-viewport { width: 100vw; height: 100vh; position: relative; } /* Fills the screen */
         .broadcast-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #fff; font-size: 1.5vw; }
         .background-media { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; z-index: 1; transform: translate(-50%, -50%); background-color: var(--bg-color, #1a1a1a); }
         .background-media video, .background-media iframe { width: 100%; height: 100%; object-fit: cover; }
@@ -35,9 +35,9 @@
         .l1-table-container { flex-grow: 1; background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); color: #212529; border-radius: 0.5em; padding: 1.2em; }
         .l1-table { width: 100%; border-collapse: collapse; }
         .l1-table th, .l1-table td { padding: 0.4em; text-align: center; }
-        .l1-table thead th { font-size: 1.2em; font-weight: 700; color: #000; padding-bottom: 0.6em; border-bottom: 2px solid #adb5bd; }
+        .l1-table thead th { font-size: 1.5em; font-weight: 700; color: #000; padding-bottom: 0.1em; border-bottom: 5px solid #c80815; }
         .l1-table thead th:first-child, .l1-table tbody td:first-child { text-align: left; }
-        .l1-table tbody tr { font-size: 1.1em; font-weight: 500; border-bottom: 1px solid #ced4da; }
+        .l1-table tbody tr { font-size: 1.4em; font-weight: 500; border-bottom: 1px solid #ced4da; }
         .l1-table tbody tr:last-child { border-bottom: none; }
         .l1-table tbody td:first-child { font-weight: 700; }
 
@@ -47,7 +47,7 @@
         .l2-title-subtitle { font-weight: 500; margin-top: 0.2em; text-shadow: 1px 1px 4px rgba(0,0,0,0.5); opacity: 0.9; }
         .l2-content { flex-grow: 1; display: grid; grid-template-columns: repeat(var(--card-count, 4), 1fr); gap: 1.5em; }
         .l2-card { background-color: rgba(10, 10, 10, 0.75); border-radius: 0.5em; text-align: center; padding: 1.2em 0.6em; border-top: 0.5em solid; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; }
-        .l2-party-name { font-size: 1.8em; font-weight: 700; text-transform: uppercase; margin-bottom: 0.3em; }
+        .l2-party-name { font-size: 2em; font-weight: 700; text-transform: uppercase; margin-bottom: 0.3em; }
         .l2-seat-count { font-size: 6em; font-weight: 800; line-height: 1; }
     </style>
 </head>
