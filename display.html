@@ -51,7 +51,7 @@
         .l3-content { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; }
         .l3-image-container { position: absolute; z-index: 3; left: 2%; bottom: 0; width: 45%; height: 95%; }
         .l3-image-container img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); }
-        .l3-info-container { z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 5%; }
+        .l3-info-container { z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 5%; text-align: right; }
         .l3-party-name { font-size: 4.5em; font-weight: 800; line-height: 1.1; color: var(--party-color, #ccc); text-shadow: 2px 2px 8px rgba(0,0,0,0.6); }
         .l3-seat-label { font-size: 1.5em; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: #fff; margin-top: 1em; opacity: 0.8; }
         .l3-seat-count { font-size: 20em; font-weight: 800; line-height: 0.9; color: var(--party-color, #ccc); }
@@ -121,26 +121,8 @@
         </div>
         <div class="broadcast-container">
             <!-- Layouts 1-2 -->
-            <div id="display-layout1" class="layout hidden">
-                <div class="top-info-bar">
-                    <h1 class="l1-header"><span id="d1-main-title" class="l1-title-main"></span><span id="d1-subtitle" class="l1-subtitle"></span></h1>
-                    <div class="total-magic-container">
-                        <div class="total-box"><span class="tm-label">Total</span><span id="d1-total-seats" class="tm-number"></span></div>
-                        <div class="magic-box"><span class="tm-label">Majority</span><span id="d1-magic-no" class="tm-number"></span></div>
-                    </div>
-                </div>
-                <div class="l1-table-container carousel-content"><table class="l1-table"><thead id="l1-thead"></thead><tbody id="l1-tbody"></tbody></table></div>
-            </div>
-            <div id="display-layout2" class="layout hidden">
-                <div class="top-info-bar">
-                     <div class="l2-header"><div id="d2-main-title" class="l2-title-main"></div><div id="d2-subtitle" class="l2-title-subtitle"></div></div>
-                    <div class="total-magic-container">
-                        <div class="total-box"><span class="tm-label">Total</span><span id="d2-total-seats" class="tm-number"></span></div>
-                        <div class="magic-box"><span class="tm-label">Majority</span><span id="d2-magic-no" class="tm-number"></span></div>
-                    </div>
-                </div>
-                <div id="l2-carousel-content" class="l2-content carousel-content"></div>
-            </div>
+            <div id="display-layout1" class="layout hidden"><!-- Unchanged --></div>
+            <div id="display-layout2" class="layout hidden"><!-- Unchanged --></div>
 
             <!-- Layout 3 (Updated) -->
             <div id="display-layout3" class="layout hidden carousel-content">
@@ -150,20 +132,13 @@
                         <div id="l3-seat-label" class="l3-seat-label">SEATS</div>
                         <div id="l3-seat-count" class="l3-seat-count"></div>
                     </div>
-                    <div class="l3-image-container"><img id="l3-leader-image"></div>
+                    <div class="l3-image-container"><img id="l3-leader-image" src=""></div>
                 </div>
             </div>
 
             <!-- Layouts 4-5 -->
-            <div id="display-layout4" class="layout hidden">
-                <h1 id="l4-main-title" class="l4-header"></h1>
-                <div id="l4-chart-container" class="l4-chart-container"></div>
-            </div>
-            <div id="display-layout5" class="layout hidden">
-                 <h1 id="l5-main-title" class="l5-header"></h1>
-                 <div class="l5-chart-wrapper"><canvas id="l5-pie-chart"></canvas><div id="l5-halfline" class="l5-halfline hidden"></div></div>
-                 <div id="l5-custom-legend" class="l5-custom-legend"></div>
-            </div>
+            <div id="display-layout4" class="layout hidden"><!-- Unchanged --></div>
+            <div id="display-layout5" class="layout hidden"><!-- Unchanged --></div>
 
             <!-- Layout 6 (Updated) -->
             <div id="display-layout6" class="layout hidden carousel-content">
@@ -175,16 +150,7 @@
             </div>
             
             <!-- Layout 7 -->
-            <div id="display-layout7" class="layout hidden carousel-content">
-                 <div class="l7-content-wrapper">
-                    <h1 id="l7-main-title" class="l7-header"></h1>
-                    <div id="l7-candidates-container" class="l7-candidates-container"></div>
-                    <div class="l7-footer">
-                        <span id="l7-source"></span>
-                        <img id="l7-logo" class="l7-logo">
-                    </div>
-                 </div>
-            </div>
+            <div id="display-layout7" class="layout hidden carousel-content"><!-- Unchanged --></div>
 
             <!-- NEW Layout 8 -->
             <div id="display-layout8" class="layout hidden">
@@ -199,9 +165,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+        // 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
         const firebaseConfig = {
-            apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
+          apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
   authDomain: "exit-poll-gfx.firebaseapp.com",
   projectId: "exit-poll-gfx",
   storageBucket: "exit-poll-gfx.firebasestorage.app",
@@ -213,10 +179,15 @@
         
         const getEl = (id) => document.getElementById(id);
         const defaultData = {
-            shared: { /* ... */ },
-            layout1: { /* ... */ }, layout2: { /* ... */ }, layout3: { /* ... */ },
-            layout4: { /* ... */ }, layout5: { /* ... */ }, layout6: { /* ... */ }, layout7: { /* ... */ },
-            layout8: { title: "2020 vs 2024", max: 300, groups: [ { groupLabel: 'Party A', bars: [ { label: '2020', value: 125, color: '#f39c12' }, { label: '2024', value: 155, color: '#f1c40f' } ] }, { groupLabel: 'Party B', bars: [ { label: '2020', value: 110, color: '#27ae60' }, { label: '2024', value: 83, color: '#2ecc71' } ] } ] }
+            shared: { bgVideoUrl: "", bgColor: "#1a1a1a", totalSeats: "0", magicNumber: "0", activeLayout: 'layout1' },
+            layout1: { mainTitle: "Results", subtitle: "", headers: { h1: "Lead", h2: "Won", h3: "Total" }, rows: [ ] },
+            layout2: { cardSets: [ ] },
+            layout3: { leaderSets: [ { name: 'LEADER', seats: 0, color: '#cccccc', image: '' } ] },
+            layout4: { title: "Standings", max: 100, bars: [ ] },
+            layout5: { title: "Seat Share", type: 'pie', slices: [ ] },
+            layout6: { highlightSets: [ { header: 'BREAKING', headline: 'Sample Headline', show_header: true } ] },
+            layout7: { candidateSets: [ ] },
+            layout8: { title: "Comparison", max: 100, groups: [ { groupLabel: 'Group A', bars: [ { label: '2020', value: 50, color: '#3498db' }, { label: '2024', value: 75, color: '#2980b9' } ] } ] }
         };
 
         let activeIntervals = []; let currentVideoBlobUrl; let pieChartInstance;
@@ -247,8 +218,8 @@
             activeIntervals.push(intervalId);
         }
 
-        // --- RENDER FUNCTIONS FOR LAYOUTS 1, 2, 4, 5, 7 are unchanged ---
         function renderTableLayout(data, shared) {
+            getEl('display-layout1').innerHTML = `<div class="top-info-bar"><h1 class="l1-header"><span id="d1-main-title" class="l1-title-main"></span><span id="d1-subtitle" class="l1-subtitle"></span></h1><div class="total-magic-container"><div class="total-box"><span class="tm-label">Total</span><span id="d1-total-seats" class="tm-number"></span></div><div class="magic-box"><span class="tm-label">Majority</span><span id="d1-magic-no" class="tm-number"></span></div></div></div><div class="l1-table-container carousel-content"><table class="l1-table"><thead id="l1-thead"></thead><tbody id="l1-tbody"></tbody></table></div>`;
             updateElement('d1-total-seats', shared.totalSeats); updateElement('d1-magic-no', shared.magicNumber);
             updateElement('d1-main-title', data.mainTitle); updateElement('d1-subtitle', data.subtitle);
             getEl('d1-main-title').style.fontSize = `${shared.l1_titleSize || 2.2}em`; getEl('d1-subtitle').style.fontSize = `${shared.l1_subtitleSize || 1}em`;
@@ -264,6 +235,7 @@
             });
         }
         function renderCardLayout(data, shared) {
+            getEl('display-layout2').innerHTML = `<div class="top-info-bar"><div class="l2-header"><div id="d2-main-title" class="l2-title-main"></div><div id="d2-subtitle" class="l2-title-subtitle"></div></div><div class="total-magic-container"><div class="total-box"><span class="tm-label">Total</span><span id="d2-total-seats" class="tm-number"></span></div><div class="magic-box"><span class="tm-label">Majority</span><span id="d2-magic-no" class="tm-number"></span></div></div></div><div id="l2-carousel-content" class="l2-content carousel-content"></div>`;
             updateElement('d2-total-seats', shared.totalSeats); updateElement('d2-magic-no', shared.magicNumber);
             const liveSets = (data.cardSets || []).filter(set => set.isLive);
             getEl('d2-main-title').style.fontSize = `${shared.l2_titleSize || 2.5}em`; getEl('d2-subtitle').style.fontSize = `${shared.l2_subtitleSize || 1.2}em`;
@@ -278,7 +250,20 @@
                 }, 300);
             });
         }
-        function renderBarChartLayout(data) { /* UNCHANGED */
+        function renderLeaderLayout(data) {
+            startCarousel(data.leaderSets || [], (data.leaderSets || []).length, 1, (d,i) => {
+                const container = getEl('display-layout3'), item = d[i]; container.classList.add('fade-out');
+                setTimeout(()=> {
+                    container.style.setProperty('--party-color', item.color);
+                    updateElement('l3-party-name', item.name);
+                    updateElement('l3-seat-count', item.seats);
+                    updateElement('l3-leader-image', item.image, 'src');
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
+        }
+        function renderBarChartLayout(data) {
+            getEl('display-layout4').innerHTML = `<h1 id="l4-main-title" class="l4-header"></h1><div id="l4-chart-container" class="l4-chart-container"></div>`;
             updateElement('l4-main-title', data.title);
             const container = getEl('l4-chart-container'); container.innerHTML = '';
             const maxVal = data.max || Math.max(...(data.bars || []).map(b => Number(b.value) || 0));
@@ -287,7 +272,8 @@
                 container.innerHTML += `<div class="l4-bar-wrapper"><div class="l4-bar-label">${bar.label}</div><div class="l4-bar" style="height: ${height}%; background-color: ${bar.color};"><div class="l4-bar-value">${bar.value}</div></div></div>`;
             });
         }
-        function renderPieChartLayout(data) { /* UNCHANGED */
+        function renderPieChartLayout(data) {
+            getEl('display-layout5').innerHTML = `<h1 id="l5-main-title" class="l5-header"></h1><div class="l5-chart-wrapper"><canvas id="l5-pie-chart"></canvas><div id="l5-halfline" class="l5-halfline hidden"></div></div><div id="l5-custom-legend" class="l5-custom-legend"></div>`;
             updateElement('l5-main-title', data.title);
             if (pieChartInstance) pieChartInstance.destroy();
             const slices = data.slices || [];
@@ -302,51 +288,9 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: data.type === 'doughnut' ? '60%' : '0%', circumference: data.type === 'doughnut' ? 180 : 360, rotation: data.type === 'doughnut' ? -90 : 0, plugins: { legend: { display: false } } }
             });
         }
-        function renderTwoCandidateLayout(data) { /* UNCHANGED */
-            startCarousel(data.candidateSets || [], (data.candidateSets || []).length, 1, (d,i) => {
-                const container = getEl('l7-candidates-container'), item = d[i]; container.classList.add('fade-out');
-                setTimeout(()=> {
-                    updateElement('l7-main-title', item.title); updateElement('l7-source', item.source); updateElement('l7-logo', item.logo, 'src');
-                    let html = '';
-                    [item.c1, item.c2].forEach(c => {
-                        if (!c) return;
-                        html += `<div class="l7-candidate">
-                            <div class="l7-image-block">
-                                <div class="l7-color-bg" style="background-color:${c.color}"></div>
-                                <img src="${c.image}">
-                                ${c.seal === 'winner' ? '<div class="l7-seal">WINNER</div>' : ''}
-                                ${c.seal === 'loser' ? '<div class="l7-seal loser">LOSER</div>' : ''}
-                            </div>
-                            <div class="l7-info-block">
-                                <div class="l7-name">${c.name}</div>
-                                <div class="l7-party">${c.party}</div>
-                                <div class="l7-constituency">${c.constituency}</div>
-                                <div class="l7-percentage">${c.percentage}</div>
-                            </div>
-                        </div>`;
-                    });
-                    container.innerHTML = html;
-                    container.classList.remove('fade-out');
-                }, 300);
-            });
-        }
-        
-        // --- UPDATED RENDER FUNCTIONS ---
-        function renderLeaderLayout(data) {
-            startCarousel(data.leaderSets || [], (data.leaderSets || []).length, 1, (d,i) => {
-                const container = getEl('display-layout3'), item = d[i]; container.classList.add('fade-out');
-                setTimeout(()=> {
-                    container.style.setProperty('--party-color', item.color);
-                    updateElement('l3-party-name', item.name);
-                    updateElement('l3-seat-count', item.seats);
-                    updateElement('l3-leader-image', item.image, 'src');
-                    container.classList.remove('fade-out');
-                }, 300);
-            });
-        }
         function renderHighlightLayout(data) {
             startCarousel(data.highlightSets || [], (data.highlightSets || []).length, 1, (d,i) => {
-                const item = d[i];
+                const item = d[i] || { headline: '', show_header: false };
                 const headlines = (item.headline || '').split('|');
                 let headlineIndex = 0;
                 
@@ -367,12 +311,26 @@
                 showHeadline();
             });
         }
-        
-        // --- NEW RENDER FUNCTION ---
+        function renderTwoCandidateLayout(data) {
+            getEl('display-layout7').innerHTML = `<div class="l7-content-wrapper"><h1 id="l7-main-title" class="l7-header"></h1><div id="l7-candidates-container" class="l7-candidates-container"></div><div class="l7-footer"><span id="l7-source"></span><img id="l7-logo" class="l7-logo"></div></div>`;
+            startCarousel(data.candidateSets || [], (data.candidateSets || []).length, 1, (d,i) => {
+                const container = getEl('l7-candidates-container'), item = d[i]; container.classList.add('fade-out');
+                setTimeout(()=> {
+                    updateElement('l7-main-title', item.title); updateElement('l7-source', item.source); updateElement('l7-logo', item.logo, 'src');
+                    let html = '';
+                    [item.c1, item.c2].forEach(c => {
+                        if (!c) return;
+                        html += `<div class="l7-candidate"><div class="l7-image-block"><div class="l7-color-bg" style="background-color:${c.color}"></div><img src="${c.image}">${c.seal === 'winner' ? '<div class="l7-seal">WINNER</div>' : ''}${c.seal === 'loser' ? '<div class="l7-seal loser">LOSER</div>' : ''}</div><div class="l7-info-block"><div class="l7-name">${c.name}</div><div class="l7-party">${c.party}</div><div class="l7-constituency">${c.constituency}</div><div class="l7-percentage">${c.percentage}</div></div></div>`;
+                    });
+                    container.innerHTML = html;
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
+        }
         function renderComparisonBarChartLayout(data) {
             updateElement('l8-main-title', data.title);
             const container = getEl('l8-chart-container'); container.innerHTML = '';
-            const maxVal = data.max || Math.max(...(data.groups || []).flatMap(g => g.bars.map(b => Number(b.value) || 0)));
+            const maxVal = data.max || Math.max(...(data.groups || []).flatMap(g => (g.bars || []).map(b => Number(b.value) || 0)));
 
             (data.groups || []).forEach(group => {
                 const groupEl = document.createElement('div');
@@ -383,13 +341,7 @@
                 
                 (group.bars || []).forEach(bar => {
                     const height = maxVal > 0 ? ((Number(bar.value) || 0) / maxVal) * 100 : 0;
-                    barsWrapper.innerHTML += `
-                        <div class="l8-bar-container">
-                            <div class="l8-bar-label">${bar.label}</div>
-                            <div class="l8-bar" style="height: ${height}%; background-color: ${bar.color};">
-                                <div class="l8-bar-value">${bar.value}</div>
-                            </div>
-                        </div>`;
+                    barsWrapper.innerHTML += `<div class="l8-bar-container"><div class="l8-bar-label">${bar.label}</div><div class="l8-bar" style="height: ${height}%; background-color: ${bar.color};"><div class="l8-bar-value">${bar.value}</div></div></div>`;
                 });
                 groupEl.appendChild(barsWrapper);
                 groupEl.innerHTML += `<div class="l8-group-label">${group.groupLabel}</div>`;
@@ -416,7 +368,7 @@
                 case 'layout5': renderPieChartLayout(data.layout5 || {}); break;
                 case 'layout6': renderHighlightLayout(data.layout6 || {}); break;
                 case 'layout7': renderTwoCandidateLayout(data.layout7 || {}); break;
-                case 'layout8': renderComparisonBarChartLayout(data.layout8 || {}); break; // New
+                case 'layout8': renderComparisonBarChartLayout(data.layout8 || {}); break;
             }
         }
         
