@@ -14,23 +14,27 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .control-group { margin-bottom: 10px; }
         label { display: block; margin-bottom: 5px; font-weight: 600; }
-        input { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background-color: #3e3e3e; color: #fff; font-size: 1em; }
+        input, select, textarea { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background-color: #3e3e3e; color: #fff; font-size: 1em; }
         input[type="file"] { padding: 3px; }
         input[type="number"] { padding-right: 2px; }
         input[type="color"] { padding: 0; height: 40px; background-color: transparent; }
+        textarea { min-height: 80px; resize: vertical; }
         button { padding: 10px 15px; font-size: 1em; font-weight: 700; cursor: pointer; border: none; border-radius: 5px; background-color: #5a5a5a; color: #fff; }
-        .layout-selector button { flex-grow: 1; padding: 15px; font-size: 1.2em; border: 2px solid #555; background-color: #444; }
+        .layout-selector { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .layout-selector button { padding: 15px; font-size: 1.1em; border: 2px solid #555; background-color: #444; }
         .layout-selector button.active { background-color: #3498db; border-color: #fff; }
         .hidden { display: none; }
-        .table-row-controls { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
         .remove-btn { background-color: #c0392b; width: 100%; }
-        .card-set { border: 1px dashed #777; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
-        .card-set-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
+        .go-live-layout-btn { width: 100%; padding: 15px; font-size: 1.3em; background-color: #27ae60; margin-top: 10px; }
+        
+        .table-row-controls { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
+        .card-set, .l3-set, .l7-set { border: 1px dashed #777; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+        .card-set-header, .set-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;}
         .card-controls { display: grid; grid-template-columns: 1.5fr 1fr 80px; gap: 10px; align-items: center; }
         .card-management-buttons { display: flex; gap: 10px; margin-top: 10px; }
-        .live-btn { background-color: #e67e22; }
-        .live-btn.active { background-color: #27ae60; box-shadow: 0 0 10px #27ae60; }
-        .go-live-layout-btn { width: 100%; padding: 15px; font-size: 1.3em; background-color: #27ae60; margin-top: 10px; }
+        .live-btn { background-color: #e67e22; } .live-btn.active { background-color: #27ae60; box-shadow: 0 0 10px #27ae60; }
+
+        .bar-controls, .slice-controls { display: grid; grid-template-columns: 1.5fr 1fr 80px 1.5fr 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -40,16 +44,25 @@
         <fieldset><legend>Global Settings</legend>
             <div class="grid">
                 <div class="control-group"><label>Background Video URL (YouTube or .mp4)</label><input type="text" id="c-bgVideoUrl"></div>
-                <div class="control-group"><label>OR Upload Local Video</label><input type="file" id="c-bgVideoFile" accept="video/mp4,video/webm"></div>
+                <div class="control-group"><label>OR Upload Local Video (Max ~5MB)</label><input type="file" id="c-bgVideoFile" accept="video/mp4,video/webm"></div>
                 <div class="control-group"><label>Fallback Background Color</label><input type="color" id="c-bgColor"></div>
                 <div class="control-group"><label>Total Seats</label><input type="text" id="c-totalSeats"></div>
                 <div class="control-group"><label>Magic Number</label><input type="text" id="c-magicNumber"></div>
             </div>
             <hr style="border-color:#555; margin: 20px 0;">
             <h3>Edit Layout:</h3>
-            <div class="layout-selector"><button id="select-layout1-btn">Table Layout</button><button id="select-layout2-btn">Card Layout</button></div>
+            <div class="layout-selector">
+                <button id="select-layout1-btn">Table</button>
+                <button id="select-layout2-btn">Cards</button>
+                <button id="select-layout3-btn">Leader</button>
+                <button id="select-layout4-btn">Bar Chart</button>
+                <button id="select-layout5-btn">Pie Chart</button>
+                <button id="select-layout6-btn">Highlight</button>
+                <button id="select-layout7-btn">Two Candidate</button>
+            </div>
         </fieldset>
-
+        
+        <!-- ALL LAYOUT CONTROL PANELS -->
         <div id="controls-layout1" class="hidden">
             <h2>Table Layout Controls</h2>
             <fieldset><legend>Titles & Font Sizes (em)</legend>
@@ -83,16 +96,76 @@
             </fieldset>
             <button id="go-live-layout2" class="go-live-layout-btn">Go Live with Card Layout</button>
         </div>
+
+        <div id="controls-layout3" class="hidden">
+            <h2>Leader Card Controls</h2>
+            <fieldset><legend>Carousel Sets</legend>
+                <div id="l3-sets-container"></div>
+                <button id="add-l3-set-btn" style="margin-top: 15px;">Add New Leader Set</button>
+            </fieldset>
+            <button id="go-live-layout3" class="go-live-layout-btn">Go Live with Leader Layout</button>
+        </div>
+
+        <div id="controls-layout4" class="hidden">
+            <h2>Bar Chart Controls</h2>
+            <fieldset><legend>Title & Max Value</legend>
+                <div class="grid">
+                    <div class="control-group"><label>Main Title</label><input type="text" id="c4-title"></div>
+                    <div class="control-group"><label>Chart Maximum Value</label><input type="number" id="c4-max"></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Bars</legend>
+                <div id="l4-bars-container"></div>
+                <button id="add-l4-bar-btn" style="margin-top: 15px;">Add Bar</button>
+            </fieldset>
+            <button id="go-live-layout4" class="go-live-layout-btn">Go Live with Bar Chart</button>
+        </div>
+
+        <div id="controls-layout5" class="hidden">
+            <h2>Pie Chart Controls</h2>
+            <fieldset><legend>Title & Chart Type</legend>
+                <div class="grid">
+                    <div class="control-group"><label>Main Title</label><input type="text" id="c5-title"></div>
+                    <div class="control-group"><label>Chart Type</label><select id="c5-type"><option value="pie">Pie (Full)</option><option value="doughnut">Doughnut (Half)</option></select></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Slices (with images for custom legend)</legend>
+                <div id="l5-slices-container"></div>
+                <button id="add-l5-slice-btn" style="margin-top: 15px;">Add Slice</button>
+            </fieldset>
+            <button id="go-live-layout5" class="go-live-layout-btn">Go Live with Pie Chart</button>
+        </div>
+
+        <div id="controls-layout6" class="hidden">
+            <h2>Highlight Controls</h2>
+            <fieldset><legend>Carousel Sets</legend>
+                <div id="l6-sets-container"></div>
+                <button id="add-l6-set-btn" style="margin-top: 15px;">Add New Highlight</button>
+            </fieldset>
+            <button id="go-live-layout6" class="go-live-layout-btn">Go Live with Highlight Layout</button>
+        </div>
+        
+        <div id="controls-layout7" class="hidden">
+            <h2>Two Candidate Controls</h2>
+            <fieldset><legend>Carousel Sets</legend>
+                <div id="l7-sets-container"></div>
+                <button id="add-l7-set-btn" style="margin-top: 15px;">Add New Set</button>
+            </fieldset>
+            <button id="go-live-layout7" class="go-live-layout-btn">Go Live with Two Candidate Layout</button>
+        </div>
+
     </div>
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // =========================================================================
-        // === PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                     ===
-        // =========================================================================
+        // =================================================================
+        // SCRIPT START
+        // =================================================================
+
+        // 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
         const firebaseConfig = {
           apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
   authDomain: "exit-poll-gfx.firebaseapp.com",
@@ -101,140 +174,126 @@
   messagingSenderId: "1006050900757",
   appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
         };
-        // =========================================================================
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const broadcastDataRef = database.ref('broadcastData');
 
         const getEl = (id) => document.getElementById(id);
-        let appState = {}; // This will always hold the latest data from Firebase.
-        let isInitialized = false;
+        let appState = {}; // This will always hold the latest data from Local Storage or Firebase.
 
-        // *** Gathers data FROM THE FORM and returns a complete object ***
+        const defaultData = {
+            shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
+            layout1: { mainTitle: "ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'Party A', p1: '15', p2: '120', p3: '135'}, { ch: 'Party B', p1: '10', p2: '85', p3: '95'} ] },
+            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Survey Co.", isLive: true, cards: [ { name: 'Party A', seats: '155', color: '#f39c12' }, { name: 'Party B', seats: '83', color: '#27ae60' } ] } ] },
+            layout3: { leaderSets: [ { name: 'PARTY NAME', seats: 160, color: '#ff9933', image: 'https://i.ibb.co/JqjT2W6/nitish-kumar-png.png' } ] },
+            layout4: { title: "Party Standings", max: 200, bars: [ { label: 'Party A', value: 155, color: '#f39c12', image: '' }, { label: 'Party B', value: 83, color: '#27ae60', image: '' } ] },
+            layout5: { title: "Seat Share Projection", type: 'pie', slices: [ { label: 'Party A', value: 155, color: '#f39c12', image: '' }, { label: 'Party B', value: 83, color: '#27ae60', image: '' } ] },
+            layout6: { highlightSets: [ { header: 'BREAKING NEWS', headline: 'This is a sample headline for the broadcast' } ] },
+            layout7: { candidateSets: [ { title: "2025 Election Results", source: "Source: National Election Committee", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/200px-BBC_Logo_2021.svg.png", c1: { name: "Candidate One", party: "Party A", constituency: "Capital City", percentage: "50.15%", image: "https://i.ibb.co/JqjT2W6/nitish-kumar-png.png", color: "#007bff", seal: "none" }, c2: { name: "Candidate Two", party: "Party B", constituency: "Northern Province", percentage: "49.85%", image: "https://i.ibb.co/hMhYdY8/modi-cartoon.png", color: "#e83e8c", seal: "none" } } ] }
+        };
+
         function gatherDataFromForm() {
-            const tableRows = Array.from(document.querySelectorAll('#table-rows-container .table-row-controls')).map(row => ({ ch: row.querySelector('.c-ch').value, p1: row.querySelector('.c-p1').value, p2: row.querySelector('.c-p2').value, p3: row.querySelector('.c-p3').value }));
-            const cardSets = Array.from(document.querySelectorAll('#card-sets-container .card-set')).map(setEl => ({
-                title: setEl.querySelector('.c-set-title').value, subtitle: setEl.querySelector('.c-set-subtitle').value, isLive: setEl.querySelector('.live-btn').classList.contains('active'),
-                cards: Array.from(setEl.querySelectorAll('.card-controls')).map(cardEl => ({ name: cardEl.querySelector('.c-card-name').value, seats: cardEl.querySelector('.c-card-seats').value, color: cardEl.querySelector('.c-card-color').value }))
-            }));
             const sharedData = { 
                 bgVideoUrl: getEl('c-bgVideoUrl').value, bgColor: getEl('c-bgColor').value, 
                 totalSeats: getEl('c-totalSeats').value, magicNumber: getEl('c-magicNumber').value, 
-                activeLayout: appState.shared.activeLayout,
+                activeLayout: appState.shared.activeLayout, 
                 l1_titleSize: getEl('c1_titleSize').value, l1_subtitleSize: getEl('c1_subtitleSize').value, 
                 l2_titleSize: getEl('c2_titleSize').value, l2_subtitleSize: getEl('c2_subtitleSize').value 
             };
             if(appState.shared.bgVideoFile) sharedData.bgVideoFile = appState.shared.bgVideoFile;
 
-            return { shared: sharedData, layout1: { ...appState.layout1, mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: tableRows }, layout2: { cardSets } };
-        }
+            const layout1 = { mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: Array.from(document.querySelectorAll('#table-rows-container .table-row-controls')).map(row => ({ ch: row.querySelector('.c-ch').value, p1: row.querySelector('.c-p1').value, p2: row.querySelector('.c-p2').value, p3: row.querySelector('.c-p3').value })) };
+            const layout2 = { cardSets: Array.from(document.querySelectorAll('#card-sets-container .card-set')).map(setEl => ({ title: setEl.querySelector('.c-set-title').value, subtitle: setEl.querySelector('.c-set-subtitle').value, isLive: setEl.querySelector('.live-btn').classList.contains('active'), cards: Array.from(setEl.querySelectorAll('.card-controls')).map(cardEl => ({ name: cardEl.querySelector('.c-card-name').value, seats: cardEl.querySelector('.c-card-seats').value, color: cardEl.querySelector('.c-card-color').value })) })) };
+            const layout3 = { leaderSets: Array.from(document.querySelectorAll('#l3-sets-container .l3-set')).map(setEl => ({ name: setEl.querySelector('.c-l3-name').value, seats: setEl.querySelector('.c-l3-seats').value, color: setEl.querySelector('.c-l3-color').value, image: setEl.querySelector('.c-l3-image').value })) };
+            const layout4 = { title: getEl('c4-title').value, max: getEl('c4-max').value, bars: Array.from(document.querySelectorAll('#l4-bars-container .bar-controls')).map(barEl => ({ label: barEl.querySelector('.c-l4-label').value, value: barEl.querySelector('.c-l4-value').value, color: barEl.querySelector('.c-l4-color').value, image: barEl.querySelector('.c-l4-image').value })) };
+            const layout5 = { title: getEl('c5-title').value, type: getEl('c5-type').value, slices: Array.from(document.querySelectorAll('#l5-slices-container .slice-controls')).map(sliceEl => ({ label: sliceEl.querySelector('.c-l5-label').value, value: sliceEl.querySelector('.c-l5-value').value, color: sliceEl.querySelector('.c-l5-color').value, image: sliceEl.querySelector('.c-l5-image').value })) };
+            const layout6 = { highlightSets: Array.from(document.querySelectorAll('#l6-sets-container .l6-set')).map(setEl => ({ header: setEl.querySelector('.c-l6-header').value, headline: setEl.querySelector('.c-l6-headline').value })) };
+            const layout7 = { candidateSets: Array.from(document.querySelectorAll('#l7-sets-container .l7-set')).map(setEl => ({ title: setEl.querySelector('.c-l7-title').value, source: setEl.querySelector('.c-l7-source').value, logo: setEl.querySelector('.c-l7-logo').value, c1: { name: setEl.querySelector('.c-l7-name1').value, party: setEl.querySelector('.c-l7-party1').value, constituency: setEl.querySelector('.c-l7-constituency1').value, percentage: setEl.querySelector('.c-l7-percentage1').value, image: setEl.querySelector('.c-l7-image1').value, color: setEl.querySelector('.c-l7-color1').value, seal: setEl.querySelector('.c-l7-seal1').value }, c2: { name: setEl.querySelector('.c-l7-name2').value, party: setEl.querySelector('.c-l7-party2').value, constituency: setEl.querySelector('.c-l7-constituency2').value, percentage: setEl.querySelector('.c-l7-percentage2').value, image: setEl.querySelector('.c-l7-image2').value, color: setEl.querySelector('.c-l7-color2').value, seal: setEl.querySelector('.c-l7-seal2').value } })) };
 
-        // *** Saves the entire state to Firebase. ONLY called by intentional actions. ***
-        function updateFirebase() { if(isInitialized) broadcastDataRef.set(gatherDataFromForm()); }
+            return { shared: sharedData, layout1, layout2, layout3, layout4, layout5, layout6, layout7 };
+        }
         
-        // *** Specifically for GO LIVE buttons. Updates everything AND the active layout. ***
         function goLive(layout) {
             const data = gatherDataFromForm();
             data.shared.activeLayout = layout;
-            broadcastDataRef.set(data);
+            appState = data;
+            
+            // Push data to Firebase Realtime Database
+            broadcastDataRef.set(data)
+                .then(() => console.log("Data successfully sent to Firebase!"))
+                .catch((error) => console.error("Error sending data to Firebase:", error));
         }
 
-        // *** Populates the form fields FROM a data object ***
         function loadDataIntoControls(data) {
-            appState = data; // Update the global state
-            
-            // Shared controls
-            getEl('c-bgVideoUrl').value = data.shared.bgVideoUrl || '';
-            getEl('c-bgColor').value = data.shared.bgColor || '#1a1a1a';
-            getEl('c-totalSeats').value = data.shared.totalSeats || '0';
-            getEl('c-magicNumber').value = data.shared.magicNumber || '0';
-            getEl('c1_titleSize').value = data.shared.l1_titleSize || 2.2;
-            getEl('c1_subtitleSize').value = data.shared.l1_subtitleSize || 1.0;
-            getEl('c2_titleSize').value = data.shared.l2_titleSize || 2.5;
-            getEl('c2_subtitleSize').value = data.shared.l2_subtitleSize || 1.2;
+            appState = data;
+            const shared = data.shared || {};
+            getEl('c-bgVideoUrl').value = shared.bgVideoUrl || ''; getEl('c-bgColor').value = shared.bgColor || '#1a1a1a';
+            getEl('c-totalSeats').value = shared.totalSeats || '0'; getEl('c-magicNumber').value = shared.magicNumber || '0';
+            getEl('c1_titleSize').value = shared.l1_titleSize || 2.2; getEl('c1_subtitleSize').value = shared.l1_subtitleSize || 1.0;
+            getEl('c2_titleSize').value = shared.l2_titleSize || 2.5; getEl('c2_subtitleSize').value = shared.l2_subtitleSize || 1.2;
 
-            // Layout 1 controls
-            const l1 = data.layout1 || {};
-            getEl('c1-mainTitle').value = l1.mainTitle || '';
-            getEl('c1-subtitle').value = l1.subtitle || '';
-            if(l1.headers) {
-                getEl('c1-header1').value = l1.headers.h1 || '';
-                getEl('c1-header2').value = l1.headers.h2 || '';
-                getEl('c1-header3').value = l1.headers.h3 || '';
-            }
-            getEl('table-rows-container').innerHTML = ''; 
-            (l1.rows || []).forEach(addTableRow);
-
-            // Layout 2 controls
-            const l2 = data.layout2 || {};
-            getEl('card-sets-container').innerHTML = '';
-            (l2.cardSets || []).forEach(addCardSet);
+            const l1 = data.layout1 || {}; getEl('c1-mainTitle').value = l1.mainTitle || ''; getEl('c1-subtitle').value = l1.subtitle || ''; if(l1.headers) { getEl('c1-header1').value = l1.headers.h1 || ''; getEl('c1-header2').value = l1.headers.h2 || ''; getEl('c1-header3').value = l1.headers.h3 || ''; } getEl('table-rows-container').innerHTML = ''; (l1.rows || []).forEach(addTableRow);
+            const l2 = data.layout2 || {}; getEl('card-sets-container').innerHTML = ''; (l2.cardSets || []).forEach(addCardSet);
+            const l3 = data.layout3 || {}; getEl('l3-sets-container').innerHTML = ''; (l3.leaderSets || []).forEach(addLeaderSet);
+            const l4 = data.layout4 || {}; getEl('c4-title').value = l4.title || ''; getEl('c4-max').value = l4.max || ''; getEl('l4-bars-container').innerHTML = ''; (l4.bars || []).forEach(addBar);
+            const l5 = data.layout5 || {}; getEl('c5-title').value = l5.title || ''; getEl('c5-type').value = l5.type || 'pie'; getEl('l5-slices-container').innerHTML = ''; (l5.slices || []).forEach(addSlice);
+            const l6 = data.layout6 || {}; getEl('l6-sets-container').innerHTML = ''; (l6.highlightSets || []).forEach(addHighlightSet);
+            const l7 = data.layout7 || {}; getEl('l7-sets-container').innerHTML = ''; (l7.candidateSets || []).forEach(addTwoCandidateSet);
             
-            // Restore which control tab was open
             switchLayout(JSON.parse(localStorage.getItem('controlPanelLayout')) || 'layout1');
         }
 
         function switchLayout(layoutToShow) {
-            getEl('select-layout1-btn').classList.toggle('active', layoutToShow === 'layout1');
-            getEl('controls-layout1').classList.toggle('hidden', layoutToShow !== 'layout1');
-            getEl('select-layout2-btn').classList.toggle('active', layoutToShow !== 'layout1');
-            getEl('controls-layout2').classList.toggle('hidden', layoutToShow === 'layout1');
+            document.querySelectorAll('.layout-selector button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.container > div[id^="controls-"]').forEach(el => el.classList.add('hidden'));
+            getEl(`select-${layoutToShow}-btn`).classList.add('active');
+            getEl(`controls-${layoutToShow}`).classList.remove('hidden');
             localStorage.setItem('controlPanelLayout', layoutToShow);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            getEl('add-row-btn').addEventListener('click', () => { addTableRow(); updateFirebase(); });
-            getEl('add-set-btn').addEventListener('click', () => { const lastSet = (appState.layout2 && appState.layout2.cardSets) ? appState.layout2.cardSets.slice(-1)[0] : {}; addCardSet(lastSet); updateFirebase(); });
-            getEl('select-layout1-btn').addEventListener('click', () => switchLayout('layout1'));
-            getEl('select-layout2-btn').addEventListener('click', () => switchLayout('layout2'));
-            getEl('go-live-layout1').addEventListener('click', () => goLive('layout1'));
-            getEl('go-live-layout2').addEventListener('click', () => goLive('layout2'));
+            document.querySelectorAll('.layout-selector button').forEach(btn => btn.addEventListener('click', () => switchLayout(btn.id.replace('select-','').replace('-btn',''))));
+            document.querySelectorAll('.go-live-layout-btn').forEach(btn => btn.addEventListener('click', () => goLive(btn.id.replace('go-live-',''))));
             
+            getEl('add-row-btn').addEventListener('click', addTableRow);
+            getEl('add-set-btn').addEventListener('click', () => addCardSet((appState.layout2 && appState.layout2.cardSets) ? appState.layout2.cardSets.slice(-1)[0] : {}));
+            getEl('add-l3-set-btn').addEventListener('click', addLeaderSet);
+            getEl('add-l4-bar-btn').addEventListener('click', addBar);
+            getEl('add-l5-slice-btn').addEventListener('click', addSlice);
+            getEl('add-l6-set-btn').addEventListener('click', addHighlightSet);
+            getEl('add-l7-set-btn').addEventListener('click', () => addTwoCandidateSet((appState.layout7 && appState.layout7.candidateSets) ? appState.layout7.candidateSets.slice(-1)[0] : {}));
+
             getEl('c-bgVideoFile').addEventListener('change', (e) => {
                 const file = e.target.files[0]; if(!file) return;
                 getEl('c-bgVideoUrl').value = ''; 
                 const reader = new FileReader();
-                reader.onload = (event) => { broadcastDataRef.child('shared/bgVideoFile').set(event.target.result); };
+                reader.onload = (event) => { appState.shared.bgVideoFile = event.target.result; };
                 reader.readAsDataURL(file);
             });
             
-            broadcastDataRef.on('value', (snapshot) => {
-                const dataFromDb = snapshot.val();
-                if (dataFromDb) {
-                    if (!isInitialized) {
-                        loadDataIntoControls(dataFromDb);
-                        isInitialized = true;
-                    }
-                    appState = dataFromDb;
+            // Load initial data from Firebase
+            broadcastDataRef.once('value').then((snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    console.log("Initial data loaded from Firebase.");
+                    loadDataIntoControls(data);
                 } else {
-                    isInitialized = true;
+                    console.log("No data found in Firebase. Loading default data and pushing to Firebase.");
                     loadDataIntoControls(defaultData);
-                    updateFirebase();
+                    broadcastDataRef.set(defaultData); // First time setup
                 }
             });
         });
         
-        function addTableRow(row = {}) {
-            const container = getEl('table-rows-container'); const rowDiv = document.createElement('div'); rowDiv.className = 'table-row-controls';
-            rowDiv.innerHTML = `<input type="text" class="c-ch" value="${row.ch||''}"><input type="text" class="c-p1" value="${row.p1||''}"><input type="text" class="c-p2" value="${row.p2||''}"><input type="text" class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`;
-            container.appendChild(rowDiv); rowDiv.querySelector('.remove-btn').addEventListener('click', () => { rowDiv.remove(); updateFirebase(); });
-        }
-        function addCardSet(setData = {}) {
-            const container = getEl('card-sets-container'); if (container.children.length >= 10) { alert("Max 10 sets."); return; }
-            const setDiv = document.createElement('fieldset'); setDiv.className = 'card-set'; const cards = setData.cards || [{name:'NDA'},{name:'MGB'},{name:'LJP'}];
-            const cardControlsHTML = cards.map(c => `<div class="card-controls"><input type="text" class="c-card-name" value="${c.name||''}"><input type="text" class="c-card-seats" value="${c.seats||'0'}"><input type="color" class="c-card-color" value="${c.color||'#cccccc'}"></div>`).join('');
-            setDiv.innerHTML = `<legend>Set ${container.children.length + 1}</legend>
-                <div class="card-set-header"><div style="flex-grow:1;"><div class="grid"><div class="control-group"><label>Title</label><input type="text" class="c-set-title" value="${setData.title||''}"></div><div class="control-group"><label>Subtitle</label><input type="text" class="c-set-subtitle" value="${setData.subtitle||''}"></div></div></div><button class="live-btn ${setData.isLive ? 'active' : ''}">${setData.isLive ? 'Live' : 'Go Live'}</button></div>
-                <div class="card-controls-container grid" style="grid-template-columns: 1fr 1fr;">${cardControlsHTML}</div>
-                <div class="card-management-buttons"><button class="add-card">+ Card</button><button class="remove-card">- Card</button><button class="remove-btn">Remove Set</button></div>`;
-            container.appendChild(setDiv);
-            const cardContainer = setDiv.querySelector('.card-controls-container');
-            setDiv.querySelector('.add-card').addEventListener('click', () => { if (cardContainer.children.length < 5) { cardContainer.innerHTML += `<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`; updateFirebase(); } });
-            setDiv.querySelector('.remove-card').addEventListener('click', () => { if (cardContainer.children.length > 3) { cardContainer.lastElementChild.remove(); updateFirebase(); } });
-            setDiv.querySelector('.remove-btn').addEventListener('click', () => { setDiv.remove(); updateFirebase(); });
-            setDiv.querySelector('.live-btn').addEventListener('click', (e) => { e.target.classList.toggle('active'); e.target.innerText = e.target.classList.contains('active') ? 'Live' : 'Go Live'; updateFirebase(); });
-        }
+        function addTableRow(row = {}) { const c = getEl('table-rows-container'); const el = document.createElement('div'); el.className = 'table-row-controls'; el.innerHTML = `<input class="c-ch" value="${row.ch||''}"><input class="c-p1" value="${row.p1||''}"><input class="c-p2" value="${row.p2||''}"><input class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click', () => el.remove()); }
+        function addCardSet(setData = {}) { const c = getEl('card-sets-container'); if (c.children.length >= 10) return; const el = document.createElement('fieldset'); el.className = 'card-set'; const cards = setData.cards || [{name:'NDA'},{name:'MGB'},{name:'LJP'}]; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="card-set-header"><div style="flex-grow:1;"><div class="grid"><div class="control-group"><label>Title</label><input class="c-set-title" value="${setData.title||''}"></div><div class="control-group"><label>Subtitle</label><input class="c-set-subtitle" value="${setData.subtitle||''}"></div></div></div><button class="live-btn ${setData.isLive?'active':''}">${setData.isLive?'Live':'Go Live'}</button></div><div class="card-controls-container grid" style="grid-template-columns:1fr 1fr;">${cards.map(card=>`<div class="card-controls"><input class="c-card-name" value="${card.name||''}"><input class="c-card-seats" value="${card.seats||'0'}"><input type="color" class="c-card-color" value="${card.color||'#cccccc'}"></div>`).join('')}</div><div class="card-management-buttons"><button class="add-card">+ Card</button><button class="remove-card">- Card</button><button class="remove-btn">Remove Set</button></div>`; c.appendChild(el); const cardC=el.querySelector('.card-controls-container'); el.querySelector('.add-card').addEventListener('click',()=>{if(cardC.children.length<5)cardC.insertAdjacentHTML('beforeend',`<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`)}); el.querySelector('.remove-card').addEventListener('click',()=>{if(cardC.children.length>3)cardC.lastElementChild.remove()}); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove()); el.querySelector('.live-btn').addEventListener('click',(e)=>{e.target.classList.toggle('active');e.target.innerText=e.target.classList.contains('active')?'Live':'Go Live'});}
+        function addLeaderSet(set = {}) { const c = getEl('l3-sets-container'); if (c.children.length >= 10) return; const el = document.createElement('div'); el.className = 'l3-set grid'; el.innerHTML = `<div class="control-group"><label>Party Name</label><input class="c-l3-name" value="${set.name||''}"></div><div class="control-group"><label>Seats</label><input type="number" class="c-l3-seats" value="${set.seats||''}"></div><div class="control-group"><label>Image URL (Transparent PNG)</label><input class="c-l3-image" value="${set.image||''}"></div><div class="control-group"><label>Accent Color</label><input type="color" class="c-l3-color" value="${set.color||'#cccccc'}"></div><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove()); }
+        function addBar(bar = {}) { const c = getEl('l4-bars-container'); const el = document.createElement('div'); el.className = 'bar-controls'; el.innerHTML = `<input class="c-l4-label" placeholder="Label" value="${bar.label||''}"><input type="number" class="c-l4-value" placeholder="Value" value="${bar.value||''}"><input type="color" class="c-l4-color" value="${bar.color||'#cccccc'}"><input class="c-l4-image" placeholder="Image URL (for bar bg)" value="${bar.image||''}"><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
+        function addSlice(slice = {}) { const c = getEl('l5-slices-container'); const el = document.createElement('div'); el.className = 'slice-controls'; el.innerHTML = `<input class="c-l5-label" placeholder="Label" value="${slice.label||''}"><input type="number" class="c-l5-value" placeholder="Value" value="${slice.value||''}"><input type="color" class="c-l5-color" value="${slice.color||'#cccccc'}"><input class="c-l5-image" placeholder="Image URL (for legend)" value="${slice.image||''}"><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
+        function addHighlightSet(set = {}) { const c = getEl('l6-sets-container'); if (c.children.length >= 10) return; const el = document.createElement('fieldset'); el.className = 'l6-set'; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="grid"><div class="control-group"><label>Header (e.g. BREAKING)</label><input class="c-l6-header" value="${set.header||''}"></div></div><div class="control-group"><label>Headlines (separate with '|')</label><textarea class="c-l6-headline">${set.headline||''}</textarea></div><button class="remove-btn">Remove</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
+        function addTwoCandidateSet(set = {}) { const c = getEl('l7-sets-container'); if (c.children.length >= 20) return; const el = document.createElement('fieldset'); el.className = 'l7-set'; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="grid"><div class="control-group"><label>Main Title</label><input class="c-l7-title" value="${set.title||''}"></div><div class="control-group"><label>Source Text</label><input class="c-l7-source" value="${set.source||''}"></div><div class="control-group"><label>Logo URL</label><input class="c-l7-logo" value="${set.logo||''}"></div></div><div class="grid" style="grid-template-columns:1fr 1fr"><fieldset><legend>Candidate 1</legend><input class="c-l7-name1" placeholder="Name" value="${(set.c1||{}).name||''}"><input class="c-l7-party1" placeholder="Party" value="${(set.c1||{}).party||''}"><input class="c-l7-constituency1" placeholder="Constituency" value="${(set.c1||{}).constituency||''}"><input class="c-l7-percentage1" placeholder="Percentage" value="${(set.c1||{}).percentage||''}"><input class="c-l7-image1" placeholder="Image URL" value="${(set.c1||{}).image||''}"><input type="color" class="c-l7-color1" value="${(set.c1||{}).color||'#007bff'}"><select class="c-l7-seal1"><option value="none">No Seal</option><option value="winner" ${((set.c1||{}).seal==='winner')?'selected':''}>Winner</option><option value="loser" ${((set.c1||{}).seal==='loser')?'selected':''}>Loser</option></select></fieldset><fieldset><legend>Candidate 2</legend><input class="c-l7-name2" placeholder="Name" value="${(set.c2||{}).name||''}"><input class="c-l7-party2" placeholder="Party" value="${(set.c2||{}).party||''}"><input class="c-l7-constituency2" placeholder="Constituency" value="${(set.c2||{}).constituency||''}"><input class="c-l7-percentage2" placeholder="Percentage" value="${(set.c2||{}).percentage||''}"><input class="c-l7-image2" placeholder="Image URL" value="${(set.c2||{}).image||''}"><input type="color" class="c-l7-color2" value="${(set.c2||{}).color||'#e83e8c'}"><select class="c-l7-seal2"><option value="none">No Seal</option><option value="winner" ${((set.c2||{}).seal==='winner')?'selected':''}>Winner</option><option value="loser" ${((set.c2||{}).seal==='loser')?'selected':''}>Loser</option></select></fieldset></div><button class="remove-btn">Remove Set</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
     </script>
 </body>
 </html>
