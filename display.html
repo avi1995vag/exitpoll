@@ -60,7 +60,7 @@
         .l4-header { text-align: center; font-size: 2.5em; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
         .l4-chart-container { flex-grow: 1; display: flex; justify-content: space-around; align-items: flex-end; gap: 1em; padding: 1em; background: rgba(0,0,0,0.3); border-radius: 0.5em; backdrop-filter: blur(5px); }
         .l4-bar-wrapper { width: 50%; height: 80%; flex: 1; text-align: center; display: flex; flex-direction: column-reverse; align-items: center; }
-        .l4-bar { width: 70%; background-color: #fff; border-radius: 0.3em 0.3em 0 0; position: relative; transition: height 0.5s ease-out; }
+        .l4-bar { width: 70%; background-color: #fff; border-radius: 0.3em 0.3em 0 0; position: relative; transition: height 0.5s ease-out; background-size: cover; background-position: center; }
         .l4-bar-value { font-size: 2em; font-weight: 800; color: #fff; text-shadow: 1px 1px 3px #000; position: absolute; top: -2em; left: 50%; transform: translateX(-50%); }
         .l4-bar-label { font-size: 1.2em; font-weight: 700; margin-top: 0.5em; color: #fff; text-shadow: 1px 1px 3px #000; }
 
@@ -72,7 +72,7 @@
         .l5-custom-legend { width: 40%; height: 80%; display: flex; flex-direction: column; justify-content: center; gap: 1em; }
         .l5-legend-item { display: flex; align-items: center; gap: 1em; background: rgba(0,0,0,0.2); padding: 0.5em; border-radius: 0.3em; }
         .l5-legend-color-box { width: 1.5em; height: 3em; border-radius: 0.2em; flex-shrink: 0; }
-        .l5-legend-image { width: 4em; height: 4em; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); }
+        .l5-legend-image { width: 4em; height: 4em; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); background-color: #333; }
         .l5-legend-label { font-size: 1.5em; font-weight: 700; flex-grow: 1; }
         .l5-legend-value { font-size: 2.5em; font-weight: 800; }
 
@@ -91,7 +91,7 @@
         .l7-candidate { width: 10%; text-align: center; }
         .l7-image-block { position: relative; margin-bottom: 1em; aspect-ratio: 3/4; }
         .l7-image-block .l7-color-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; }
-        .l7-image-block img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+        .l7-image-block img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; object-position: top center; background-color: #555; }
         .l7-seal { position: absolute; z-index: 3; top: 0.5em; right: 0.5em; background: #27ae60; color: #fff; font-size: 1.2em; font-weight: 800; width: 5em; height: 5em; border-radius: 50%; display: grid; place-items: center; transform: rotate(15deg); }
         .l7-seal.loser { background: #c0392b; }
         .l7-info-block { display: flex; flex-direction: end; gap: 0.2em; }
@@ -120,11 +120,8 @@
             <iframe id="bg-youtube" class="hidden" frameborder="0" allow="autoplay; encrypted-media"></iframe>
         </div>
         <div class="broadcast-container">
-            <!-- Layouts 1-2 -->
-            <div id="display-layout1" class="layout hidden"><!-- Unchanged --></div>
-            <div id="display-layout2" class="layout hidden"><!-- Unchanged --></div>
-
-            <!-- Layout 3 (Updated) -->
+            <div id="display-layout1" class="layout hidden"></div>
+            <div id="display-layout2" class="layout hidden"></div>
             <div id="display-layout3" class="layout hidden carousel-content">
                 <div class="l3-content">
                     <div class="l3-info-container">
@@ -135,12 +132,8 @@
                     <div class="l3-image-container"><img id="l3-leader-image" src=""></div>
                 </div>
             </div>
-
-            <!-- Layouts 4-5 -->
-            <div id="display-layout4" class="layout hidden"><!-- Unchanged --></div>
-            <div id="display-layout5" class="layout hidden"><!-- Unchanged --></div>
-
-            <!-- Layout 6 (Updated) -->
+            <div id="display-layout4" class="layout hidden"></div>
+            <div id="display-layout5" class="layout hidden"></div>
             <div id="display-layout6" class="layout hidden carousel-content">
                  <div class="l6-content">
                      <div id="l6-header" class="l6-header"></div>
@@ -148,11 +141,7 @@
                      <h1 id="l6-headline" class="l6-headline"></h1>
                  </div>
             </div>
-            
-            <!-- Layout 7 -->
-            <div id="display-layout7" class="layout hidden carousel-content"><!-- Unchanged --></div>
-
-            <!-- NEW Layout 8 -->
+            <div id="display-layout7" class="layout hidden carousel-content"></div>
             <div id="display-layout8" class="layout hidden">
                 <h1 id="l8-main-title" class="l8-header"></h1>
                 <div id="l8-chart-container" class="l8-chart-container"></div>
@@ -182,7 +171,7 @@
             shared: { bgVideoUrl: "", bgColor: "#1a1a1a", totalSeats: "0", magicNumber: "0", activeLayout: 'layout1' },
             layout1: { mainTitle: "Results", subtitle: "", headers: { h1: "Lead", h2: "Won", h3: "Total" }, rows: [ ] },
             layout2: { cardSets: [ ] },
-            layout3: { leaderSets: [ { name: 'LEADER', seats: 0, color: '#cccccc', image: '' } ] },
+            layout3: { leaderSets: [ { name: 'LEADER', seats: 0, color: '#cccccc', image: '', image_data: '' } ] },
             layout4: { title: "Standings", max: 100, bars: [ ] },
             layout5: { title: "Seat Share", type: 'pie', slices: [ ] },
             layout6: { highlightSets: [ { header: 'BREAKING', headline: 'Sample Headline', show_header: true } ] },
@@ -199,20 +188,22 @@
             const videoEl = getEl('bg-video'), youtubeEl = getEl('bg-youtube'), container = getEl('background-media');
             videoEl.classList.add('hidden'); youtubeEl.classList.add('hidden'); container.style.backgroundColor = color;
             if (currentVideoBlobUrl) { URL.revokeObjectURL(currentVideoBlobUrl); currentVideoBlobUrl = null; }
-            let finalUrl = fileData ? URL.createObjectURL(new Blob([Uint8Array.from(atob(fileData.split(',')[1]), c => c.charCodeAt(0))], {type: 'video/mp4'})) : url;
-            if (finalUrl && finalUrl.startsWith('blob:')) currentVideoBlobUrl = finalUrl;
+            let finalUrl = fileData ? fileData : url; // Prioritize Base64 data for video too
+            if (finalUrl && (finalUrl.startsWith('blob:') || finalUrl.startsWith('data:'))) {
+                 currentVideoBlobUrl = finalUrl.startsWith('blob:') ? finalUrl : undefined;
+            }
             if (!finalUrl) { videoEl.src = ''; youtubeEl.src = ''; return; }
             if (finalUrl.includes('youtube.com') || finalUrl.includes('youtu.be')) {
                 const videoIdMatch = finalUrl.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})(?:\?|&|$)/);
                 if (videoIdMatch) { youtubeEl.src = `https://www.youtube.com/embed/${videoIdMatch[1]}?autoplay=1&mute=1&loop=1&playlist=${videoIdMatch[1]}&controls=0&showinfo=0&autohide=1&modestbranding=1`; youtubeEl.classList.remove('hidden'); }
-            } else if (finalUrl.endsWith('.mp4') || finalUrl.endsWith('.webm') || finalUrl.startsWith('blob:')) {
+            } else { // Handles .mp4, .webm, blob:, and data: URLs
                 videoEl.src = finalUrl; videoEl.classList.remove('hidden');
             }
         }
 
         function startCarousel(data, totalItems, pageSize, showPageFn) {
             const numPages = Math.ceil(totalItems / pageSize); let currentPage = 0;
-            if (numPages > 0) showPageFn(data, 0); else showPageFn([], 0);
+            if (totalItems > 0) showPageFn(data, 0); else showPageFn([], 0);
             if (numPages <= 1) return;
             const intervalId = setInterval(() => { currentPage = (currentPage + 1) % numPages; showPageFn(data, currentPage); }, CAROUSEL_SPEED);
             activeIntervals.push(intervalId);
@@ -252,12 +243,12 @@
         }
         function renderLeaderLayout(data) {
             startCarousel(data.leaderSets || [], (data.leaderSets || []).length, 1, (d,i) => {
-                const container = getEl('display-layout3'), item = d[i]; container.classList.add('fade-out');
+                const container = getEl('display-layout3'), item = d[i] || {}; container.classList.add('fade-out');
                 setTimeout(()=> {
                     container.style.setProperty('--party-color', item.color);
                     updateElement('l3-party-name', item.name);
                     updateElement('l3-seat-count', item.seats);
-                    updateElement('l3-leader-image', item.image, 'src');
+                    updateElement('l3-leader-image', item.image_data || item.image, 'src'); // Prioritize Base64
                     container.classList.remove('fade-out');
                 }, 300);
             });
@@ -269,7 +260,9 @@
             const maxVal = data.max || Math.max(...(data.bars || []).map(b => Number(b.value) || 0));
             (data.bars || []).forEach(bar => {
                 const height = maxVal > 0 ? ((Number(bar.value) || 0) / maxVal) * 100 : 0;
-                container.innerHTML += `<div class="l4-bar-wrapper"><div class="l4-bar-label">${bar.label}</div><div class="l4-bar" style="height: ${height}%; background-color: ${bar.color};"><div class="l4-bar-value">${bar.value}</div></div></div>`;
+                const bgImage = bar.image_data || bar.image; // Prioritize Base64
+                const barStyle = `height: ${height}%; background-color: ${bar.color}; ${bgImage ? `background-image: url(${bgImage});` : ''}`;
+                container.innerHTML += `<div class="l4-bar-wrapper"><div class="l4-bar-label">${bar.label}</div><div class="l4-bar" style="${barStyle}"><div class="l4-bar-value">${bar.value}</div></div></div>`;
             });
         }
         function renderPieChartLayout(data) {
@@ -280,7 +273,8 @@
             getEl('l5-halfline').classList.toggle('hidden', data.type !== 'doughnut');
             const legendContainer = getEl('l5-custom-legend'); legendContainer.innerHTML = '';
             slices.forEach(slice => {
-                legendContainer.innerHTML += `<div class="l5-legend-item"><div class="l5-legend-color-box" style="background-color: ${slice.color};"></div><img src="${slice.image}" class="l5-legend-image"><span class="l5-legend-label">${slice.label}</span><span class="l5-legend-value">${slice.value}</span></div>`;
+                const imgSrc = slice.image_data || slice.image; // Prioritize Base64
+                legendContainer.innerHTML += `<div class="l5-legend-item"><div class="l5-legend-color-box" style="background-color: ${slice.color};"></div><img src="${imgSrc}" class="l5-legend-image"><span class="l5-legend-label">${slice.label}</span><span class="l5-legend-value">${slice.value}</span></div>`;
             });
             pieChartInstance = new Chart(getEl('l5-pie-chart').getContext('2d'), {
                 type: 'doughnut',
@@ -314,13 +308,15 @@
         function renderTwoCandidateLayout(data) {
             getEl('display-layout7').innerHTML = `<div class="l7-content-wrapper"><h1 id="l7-main-title" class="l7-header"></h1><div id="l7-candidates-container" class="l7-candidates-container"></div><div class="l7-footer"><span id="l7-source"></span><img id="l7-logo" class="l7-logo"></div></div>`;
             startCarousel(data.candidateSets || [], (data.candidateSets || []).length, 1, (d,i) => {
-                const container = getEl('l7-candidates-container'), item = d[i]; container.classList.add('fade-out');
+                const container = getEl('l7-candidates-container'), item = d[i] || {}; container.classList.add('fade-out');
                 setTimeout(()=> {
-                    updateElement('l7-main-title', item.title); updateElement('l7-source', item.source); updateElement('l7-logo', item.logo, 'src');
+                    updateElement('l7-main-title', item.title); updateElement('l7-source', item.source); 
+                    updateElement('l7-logo', item.logo_data || item.logo, 'src'); // Prioritize Base64
                     let html = '';
                     [item.c1, item.c2].forEach(c => {
                         if (!c) return;
-                        html += `<div class="l7-candidate"><div class="l7-image-block"><div class="l7-color-bg" style="background-color:${c.color}"></div><img src="${c.image}">${c.seal === 'winner' ? '<div class="l7-seal">WINNER</div>' : ''}${c.seal === 'loser' ? '<div class="l7-seal loser">LOSER</div>' : ''}</div><div class="l7-info-block"><div class="l7-name">${c.name}</div><div class="l7-party">${c.party}</div><div class="l7-constituency">${c.constituency}</div><div class="l7-percentage">${c.percentage}</div></div></div>`;
+                        const imgSrc = c.image_data || c.image; // Prioritize Base64
+                        html += `<div class="l7-candidate"><div class="l7-image-block"><div class="l7-color-bg" style="background-color:${c.color}"></div><img src="${imgSrc}">${c.seal === 'winner' ? '<div class="l7-seal">WINNER</div>' : ''}${c.seal === 'loser' ? '<div class="l7-seal loser">LOSER</div>' : ''}</div><div class="l7-info-block"><div class="l7-name">${c.name}</div><div class="l7-party">${c.party}</div><div class="l7-constituency">${c.constituency}</div><div class="l7-percentage">${c.percentage}</div></div></div>`;
                     });
                     container.innerHTML = html;
                     container.classList.remove('fade-out');
@@ -328,6 +324,7 @@
             });
         }
         function renderComparisonBarChartLayout(data) {
+            getEl('display-layout8').innerHTML = `<h1 id="l8-main-title" class="l8-header"></h1><div id="l8-chart-container" class="l8-chart-container"></div>`;
             updateElement('l8-main-title', data.title);
             const container = getEl('l8-chart-container'); container.innerHTML = '';
             const maxVal = data.max || Math.max(...(data.groups || []).flatMap(g => (g.bars || []).map(b => Number(b.value) || 0)));
@@ -335,7 +332,6 @@
             (data.groups || []).forEach(group => {
                 const groupEl = document.createElement('div');
                 groupEl.className = 'l8-bar-group';
-
                 const barsWrapper = document.createElement('div');
                 barsWrapper.className = 'l8-bars-wrapper';
                 
