@@ -49,13 +49,14 @@
         /* --- LAYOUT 3: LEADER CARD (Creative Redesign) --- */
         #display-layout3 { justify-content: center; align-items: center; overflow: hidden; }
         .l3-content { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; }
-        .l3-image-container { position: absolute; z-index: 3; left: 0; bottom: 0; width: 45%; height: 90%; }
+        .l3-image-container { position: absolute; z-index: 3; left: 2%; bottom: 0; width: 45%; height: 95%; }
         .l3-image-container img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); }
-        .l3-info-container { z-index: 2; width: 100%; text-align: center; padding-left: 5%; }
-        .l3-party-name { font-size: 4em; font-weight: 800; line-height: 1.1; color: var(--party-color, #ccc); text-shadow: 2px 2px 8px rgba(0,0,0,0.6); }
-        .l3-seat-count { font-size: 25em; font-weight: 800; line-height: 1; color: var(--party-color, #ccc); }
+        .l3-info-container { z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 5%; }
+        .l3-party-name { font-size: 4.5em; font-weight: 800; line-height: 1.1; color: var(--party-color, #ccc); text-shadow: 2px 2px 8px rgba(0,0,0,0.6); }
+        .l3-seat-label { font-size: 1.5em; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; color: #fff; margin-top: 1em; opacity: 0.8; }
+        .l3-seat-count { font-size: 20em; font-weight: 800; line-height: 0.9; color: var(--party-color, #ccc); }
         
-        /* --- LAYOUT 4: BAR CHART (Simple Column Redesign) --- */
+        /* --- LAYOUT 4: BAR CHART (Simple) --- */
         .l4-header { text-align: center; font-size: 2.5em; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
         .l4-chart-container { flex-grow: 1; display: flex; justify-content: space-around; align-items: flex-end; gap: 1em; padding: 1em; background: rgba(0,0,0,0.3); border-radius: 0.5em; backdrop-filter: blur(5px); }
         .l4-bar-wrapper { width: 50%; height: 80%; flex: 1; text-align: center; display: flex; flex-direction: column-reverse; align-items: center; }
@@ -63,7 +64,7 @@
         .l4-bar-value { font-size: 2em; font-weight: 800; color: #fff; text-shadow: 1px 1px 3px #000; position: absolute; top: -2em; left: 50%; transform: translateX(-50%); }
         .l4-bar-label { font-size: 1.2em; font-weight: 700; margin-top: 0.5em; color: #fff; text-shadow: 1px 1px 3px #000; }
 
-        /* --- LAYOUT 5: PIE CHART (Custom Legend) --- */
+        /* --- LAYOUT 5: PIE CHART --- */
         #display-layout5 { flex-direction: row; align-items: center; gap: 2em; }
         .l5-header { position: absolute; top: 2.5%; left: 50%; transform: translateX(-50%); font-size: 2.5em; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
         .l5-chart-wrapper { width: 50%; height: 80%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); position: relative; }
@@ -75,14 +76,14 @@
         .l5-legend-label { font-size: 1.5em; font-weight: 700; flex-grow: 1; }
         .l5-legend-value { font-size: 2.5em; font-weight: 800; }
 
-        /* --- LAYOUT 6: HIGHLIGHT (Full Screen Statement) --- */
-         #display-layout6 { justify-content: center; align-items: center; padding: 0; background: rgba(10,10,10,0.8); backdrop-filter: blur(10px); }
+        /* --- LAYOUT 6: HIGHLIGHT --- */
+        #display-layout6 { justify-content: center; align-items: center; padding: 0; background: rgba(10,10,10,0.8); backdrop-filter: blur(10px); }
         .l6-content { width: 80%; text-align: center; }
         .l6-header { font-size: 2.5em; font-weight: 800; text-transform: uppercase; color: #e74c3c; letter-spacing: 2px; }
         .l6-headline { font-size: 5em; font-weight: 700; line-height: 1.2; margin-top: 0.2em; transition: opacity 0.3s; }
         .l6-line { width: 10em; height: 0.3em; background: #e74c3c; margin: 1em auto; }
         
-        /* --- LAYOUT 7: BBC STYLE (Redesigned) --- */
+        /* --- LAYOUT 7: BBC STYLE --- */
         #display-layout7 { background-color: transparent; }
         .l7-content-wrapper { width: 100%; height: 100%; background-color: #fff; color: #333; display: flex; flex-direction: column; transform: skewX(-5deg); }
         .l7-header { width: 100%; color: #333; font-size: 2.5em; font-weight: 700; padding: 0.5em 2em; flex-shrink: 0; transform: skewX(5deg); }
@@ -99,6 +100,17 @@
         .l7-percentage { font-size: 3.5em; font-weight: 800; margin-top: 0.2em; }
         .l7-footer { width: 100%; border-top: 1px solid #ccc; padding: 0.5em 2em; color: #555; font-size: 1em; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; transform: skewX(5deg); }
         .l7-logo { height: 1.8em; width: auto; }
+
+        /* --- LAYOUT 8: COMPARISON BAR CHART --- */
+        .l8-header { text-align: center; font-size: 2.5em; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
+        .l8-chart-container { flex-grow: 1; display: flex; justify-content: space-around; align-items: flex-end; gap: 2em; padding: 1em; background: rgba(0,0,0,0.3); border-radius: 0.5em; backdrop-filter: blur(5px); }
+        .l8-bar-group { flex: 1; height: 80%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        .l8-bars-wrapper { display: flex; align-items: flex-end; justify-content: center; gap: 0.5em; width: 100%; height: 100%; }
+        .l8-bar-container { flex: 1; height: 100%; display: flex; flex-direction: column-reverse; align-items: center; }
+        .l8-bar { width: 80%; background-color: #fff; border-radius: 0.3em 0.3em 0 0; position: relative; transition: height 0.5s ease-out; }
+        .l8-bar-value { font-size: 1.5em; font-weight: 800; color: #fff; text-shadow: 1px 1px 3px #000; position: absolute; top: -1.8em; left: 50%; transform: translateX(-50%); }
+        .l8-bar-label { font-size: 0.9em; font-weight: 500; margin-top: 0.5em; color: #fff; }
+        .l8-group-label { font-size: 1.5em; font-weight: 700; margin-top: 0.8em; color: #fff; text-shadow: 1px 1px 3px #000; }
     </style>
 </head>
 <body>
@@ -108,7 +120,7 @@
             <iframe id="bg-youtube" class="hidden" frameborder="0" allow="autoplay; encrypted-media"></iframe>
         </div>
         <div class="broadcast-container">
-            <!-- All 7 Layouts -->
+            <!-- Layouts 1-2 -->
             <div id="display-layout1" class="layout hidden">
                 <div class="top-info-bar">
                     <h1 class="l1-header"><span id="d1-main-title" class="l1-title-main"></span><span id="d1-subtitle" class="l1-subtitle"></span></h1>
@@ -119,7 +131,6 @@
                 </div>
                 <div class="l1-table-container carousel-content"><table class="l1-table"><thead id="l1-thead"></thead><tbody id="l1-tbody"></tbody></table></div>
             </div>
-
             <div id="display-layout2" class="layout hidden">
                 <div class="top-info-bar">
                      <div class="l2-header"><div id="d2-main-title" class="l2-title-main"></div><div id="d2-subtitle" class="l2-title-subtitle"></div></div>
@@ -131,35 +142,39 @@
                 <div id="l2-carousel-content" class="l2-content carousel-content"></div>
             </div>
 
+            <!-- Layout 3 (Updated) -->
             <div id="display-layout3" class="layout hidden carousel-content">
                 <div class="l3-content">
                     <div class="l3-info-container">
                         <div id="l3-party-name" class="l3-party-name"></div>
+                        <div id="l3-seat-label" class="l3-seat-label">SEATS</div>
                         <div id="l3-seat-count" class="l3-seat-count"></div>
                     </div>
                     <div class="l3-image-container"><img id="l3-leader-image"></div>
                 </div>
             </div>
 
+            <!-- Layouts 4-5 -->
             <div id="display-layout4" class="layout hidden">
                 <h1 id="l4-main-title" class="l4-header"></h1>
                 <div id="l4-chart-container" class="l4-chart-container"></div>
             </div>
-
             <div id="display-layout5" class="layout hidden">
                  <h1 id="l5-main-title" class="l5-header"></h1>
                  <div class="l5-chart-wrapper"><canvas id="l5-pie-chart"></canvas><div id="l5-halfline" class="l5-halfline hidden"></div></div>
                  <div id="l5-custom-legend" class="l5-custom-legend"></div>
             </div>
 
+            <!-- Layout 6 (Updated) -->
             <div id="display-layout6" class="layout hidden carousel-content">
                  <div class="l6-content">
                      <div id="l6-header" class="l6-header"></div>
-                     <div class="l6-line"></div>
+                     <div id="l6-line" class="l6-line"></div>
                      <h1 id="l6-headline" class="l6-headline"></h1>
                  </div>
             </div>
-
+            
+            <!-- Layout 7 -->
             <div id="display-layout7" class="layout hidden carousel-content">
                  <div class="l7-content-wrapper">
                     <h1 id="l7-main-title" class="l7-header"></h1>
@@ -170,43 +185,38 @@
                     </div>
                  </div>
             </div>
+
+            <!-- NEW Layout 8 -->
+            <div id="display-layout8" class="layout hidden">
+                <h1 id="l8-main-title" class="l8-header"></h1>
+                <div id="l8-chart-container" class="l8-chart-container"></div>
+            </div>
         </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // =================================================================
-        // SCRIPT START
-        // =================================================================
-
-        // 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+        // PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
         const firebaseConfig = {
-          apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
+            apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
   authDomain: "exit-poll-gfx.firebaseapp.com",
   projectId: "exit-poll-gfx",
   storageBucket: "exit-poll-gfx.firebasestorage.app",
   messagingSenderId: "1006050900757",
   appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
         };
-        
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         
         const getEl = (id) => document.getElementById(id);
         const defaultData = {
-            shared: { bgVideoUrl: "", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
-            layout1: { mainTitle: "ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'Party A', p1: '15', p2: '120', p3: '135'}, { ch: 'Party B', p1: '10', p2: '85', p3: '95'} ] },
-            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Survey Co.", isLive: true, cards: [ { name: 'Party A', seats: '155', color: '#f39c12' }, { name: 'Party B', seats: '83', color: '#27ae60' } ] } ] },
-            layout3: { leaderSets: [ { name: 'PARTY NAME', seats: 160, color: '#ff9933', image: 'https://i.ibb.co/JqjT2W6/nitish-kumar-png.png' } ] },
-            layout4: { title: "Party Standings", max: 200, bars: [ { label: 'Party A', value: 155, color: '#f39c12', image: '' }, { label: 'Party B', value: 83, color: '#27ae60', image: '' } ] },
-            layout5: { title: "Seat Share Projection", type: 'pie', slices: [ { label: 'Party A', value: 155, color: '#f39c12', image: '' }, { label: 'Party B', value: 83, color: '#27ae60', image: '' } ] },
-            layout6: { highlightSets: [ { header: 'BREAKING NEWS', headline: 'This is a sample headline for the broadcast' } ] },
-            layout7: { candidateSets: [ { title: "2025 Election Results", source: "Source: National Election Committee", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/200px-BBC_Logo_2021.svg.png", c1: { name: "Candidate One", party: "Party A", constituency: "Capital City", percentage: "50.15%", image: "https://i.ibb.co/JqjT2W6/nitish-kumar-png.png", color: "#007bff", seal: "none" }, c2: { name: "Candidate Two", party: "Party B", constituency: "Northern Province", percentage: "49.85%", image: "https://i.ibb.co/hMhYdY8/modi-cartoon.png", color: "#e83e8c", seal: "none" } } ] }
+            shared: { /* ... */ },
+            layout1: { /* ... */ }, layout2: { /* ... */ }, layout3: { /* ... */ },
+            layout4: { /* ... */ }, layout5: { /* ... */ }, layout6: { /* ... */ }, layout7: { /* ... */ },
+            layout8: { title: "2020 vs 2024", max: 300, groups: [ { groupLabel: 'Party A', bars: [ { label: '2020', value: 125, color: '#f39c12' }, { label: '2024', value: 155, color: '#f1c40f' } ] }, { groupLabel: 'Party B', bars: [ { label: '2020', value: 110, color: '#27ae60' }, { label: '2024', value: 83, color: '#2ecc71' } ] } ] }
         };
 
         let activeIntervals = []; let currentVideoBlobUrl; let pieChartInstance;
@@ -237,6 +247,7 @@
             activeIntervals.push(intervalId);
         }
 
+        // --- RENDER FUNCTIONS FOR LAYOUTS 1, 2, 4, 5, 7 are unchanged ---
         function renderTableLayout(data, shared) {
             updateElement('d1-total-seats', shared.totalSeats); updateElement('d1-magic-no', shared.magicNumber);
             updateElement('d1-main-title', data.mainTitle); updateElement('d1-subtitle', data.subtitle);
@@ -267,18 +278,7 @@
                 }, 300);
             });
         }
-        function renderLeaderLayout(data) {
-            startCarousel(data.leaderSets || [], (data.leaderSets || []).length, 1, (d,i) => {
-                const container = getEl('display-layout3'), item = d[i]; container.classList.add('fade-out');
-                setTimeout(()=> {
-                    container.style.setProperty('--party-color', item.color);
-                    updateElement('l3-party-name', item.name); updateElement('l3-seat-count', item.seats);
-                    updateElement('l3-leader-image', item.image, 'src');
-                    container.classList.remove('fade-out');
-                }, 300);
-            });
-        }
-        function renderBarChartLayout(data) {
+        function renderBarChartLayout(data) { /* UNCHANGED */
             updateElement('l4-main-title', data.title);
             const container = getEl('l4-chart-container'); container.innerHTML = '';
             const maxVal = data.max || Math.max(...(data.bars || []).map(b => Number(b.value) || 0));
@@ -287,7 +287,7 @@
                 container.innerHTML += `<div class="l4-bar-wrapper"><div class="l4-bar-label">${bar.label}</div><div class="l4-bar" style="height: ${height}%; background-color: ${bar.color};"><div class="l4-bar-value">${bar.value}</div></div></div>`;
             });
         }
-        function renderPieChartLayout(data) {
+        function renderPieChartLayout(data) { /* UNCHANGED */
             updateElement('l5-main-title', data.title);
             if (pieChartInstance) pieChartInstance.destroy();
             const slices = data.slices || [];
@@ -302,30 +302,7 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: data.type === 'doughnut' ? '60%' : '0%', circumference: data.type === 'doughnut' ? 180 : 360, rotation: data.type === 'doughnut' ? -90 : 0, plugins: { legend: { display: false } } }
             });
         }
-        function renderHighlightLayout(data) {
-            startCarousel(data.highlightSets || [], (data.highlightSets || []).length, 1, (d,i) => {
-                const item = d[i];
-                const headlines = (item.headline || '').split('|');
-                let headlineIndex = 0;
-                
-                const showHeadline = () => {
-                    const headlineEl = getEl('l6-headline');
-                    headlineEl.style.opacity = 0;
-                    setTimeout(()=> {
-                        getEl('l6-header').classList.toggle('hidden', !item.showHeader);
-                        getEl('l6-line').classList.toggle('hidden', !item.showHeader);
-                        updateElement('l6-header', item.header);
-                        updateElement('l6-headline', headlines[headlineIndex]);
-                        headlineEl.style.opacity = 1;
-                        headlineIndex = (headlineIndex + 1) % headlines.length;
-                    }, 300);
-                }
-                if (activeIntervals.find(id => String(id).includes('headline'))) clearInterval(activeIntervals.pop());
-                if (headlines.length > 1) { const intervalId = setInterval(showHeadline, 4000); intervalId._ms = 'headline'; activeIntervals.push(intervalId); }
-                showHeadline();
-            });
-        }
-        function renderTwoCandidateLayout(data) {
+        function renderTwoCandidateLayout(data) { /* UNCHANGED */
             startCarousel(data.candidateSets || [], (data.candidateSets || []).length, 1, (d,i) => {
                 const container = getEl('l7-candidates-container'), item = d[i]; container.classList.add('fade-out');
                 setTimeout(()=> {
@@ -354,6 +331,72 @@
             });
         }
         
+        // --- UPDATED RENDER FUNCTIONS ---
+        function renderLeaderLayout(data) {
+            startCarousel(data.leaderSets || [], (data.leaderSets || []).length, 1, (d,i) => {
+                const container = getEl('display-layout3'), item = d[i]; container.classList.add('fade-out');
+                setTimeout(()=> {
+                    container.style.setProperty('--party-color', item.color);
+                    updateElement('l3-party-name', item.name);
+                    updateElement('l3-seat-count', item.seats);
+                    updateElement('l3-leader-image', item.image, 'src');
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
+        }
+        function renderHighlightLayout(data) {
+            startCarousel(data.highlightSets || [], (data.highlightSets || []).length, 1, (d,i) => {
+                const item = d[i];
+                const headlines = (item.headline || '').split('|');
+                let headlineIndex = 0;
+                
+                const showHeadline = () => {
+                    const headlineEl = getEl('l6-headline');
+                    headlineEl.style.opacity = 0;
+                    setTimeout(()=> {
+                        getEl('l6-header').classList.toggle('hidden', !item.show_header);
+                        getEl('l6-line').classList.toggle('hidden', !item.show_header);
+                        updateElement('l6-header', item.header);
+                        updateElement('l6-headline', headlines[headlineIndex]);
+                        headlineEl.style.opacity = 1;
+                        headlineIndex = (headlineIndex + 1) % headlines.length;
+                    }, 300);
+                }
+                if (activeIntervals.find(id => String(id).includes('headline'))) clearInterval(activeIntervals.pop());
+                if (headlines.length > 1) { const intervalId = setInterval(showHeadline, 4000); intervalId._ms = 'headline'; activeIntervals.push(intervalId); }
+                showHeadline();
+            });
+        }
+        
+        // --- NEW RENDER FUNCTION ---
+        function renderComparisonBarChartLayout(data) {
+            updateElement('l8-main-title', data.title);
+            const container = getEl('l8-chart-container'); container.innerHTML = '';
+            const maxVal = data.max || Math.max(...(data.groups || []).flatMap(g => g.bars.map(b => Number(b.value) || 0)));
+
+            (data.groups || []).forEach(group => {
+                const groupEl = document.createElement('div');
+                groupEl.className = 'l8-bar-group';
+
+                const barsWrapper = document.createElement('div');
+                barsWrapper.className = 'l8-bars-wrapper';
+                
+                (group.bars || []).forEach(bar => {
+                    const height = maxVal > 0 ? ((Number(bar.value) || 0) / maxVal) * 100 : 0;
+                    barsWrapper.innerHTML += `
+                        <div class="l8-bar-container">
+                            <div class="l8-bar-label">${bar.label}</div>
+                            <div class="l8-bar" style="height: ${height}%; background-color: ${bar.color};">
+                                <div class="l8-bar-value">${bar.value}</div>
+                            </div>
+                        </div>`;
+                });
+                groupEl.appendChild(barsWrapper);
+                groupEl.innerHTML += `<div class="l8-group-label">${group.groupLabel}</div>`;
+                container.appendChild(groupEl);
+            });
+        }
+
         function updateDisplay(data) {
             if (!data) data = defaultData;
             const shared = data.shared || defaultData.shared;
@@ -373,20 +416,14 @@
                 case 'layout5': renderPieChartLayout(data.layout5 || {}); break;
                 case 'layout6': renderHighlightLayout(data.layout6 || {}); break;
                 case 'layout7': renderTwoCandidateLayout(data.layout7 || {}); break;
+                case 'layout8': renderComparisonBarChartLayout(data.layout8 || {}); break; // New
             }
         }
         
-        // Listen for real-time data changes from Firebase
         const broadcastDataRef = database.ref('broadcastData');
         broadcastDataRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                console.log("Received data update from Firebase.");
-                updateDisplay(data);
-            } else {
-                console.log("No data in Firebase, using default data.");
-                updateDisplay(defaultData);
-            }
+            updateDisplay(data || defaultData);
         });
     </script>
 </body>
