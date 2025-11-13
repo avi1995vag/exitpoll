@@ -9,7 +9,7 @@
         :root { --primary-font: 'Anek Kannada', sans-serif; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: #000; overflow: hidden; font-family: var(--primary-font); }
-        .broadcast-viewport { width: 100vw; height: 100vh; position: relative; } /* Fills the screen */
+        .broadcast-viewport { width: 100vw; height: 100vh; position: relative; }
         .broadcast-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; color: #fff; font-size: 1.5vw; }
         .background-media { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; z-index: 1; transform: translate(-50%, -50%); background-color: var(--bg-color, #1a1a1a); }
         .background-media video, .background-media iframe { width: 100%; height: 100%; object-fit: cover; }
@@ -17,38 +17,88 @@
         .layout { position: relative; z-index: 2; width: 100%; height: 100%; padding: 2.5%; display: flex; flex-direction: column; gap: 1em; }
         .hidden { display: none !important; }
 
-        /* Shared Top Info Box */
-        .top-info-bar { display: flex; justify-content: space-between; align-items: center; gap: 0.5em; flex-shrink: 0; }
-        .total-magic-container { display: flex; gap: 0.5em; }
-        .total-box, .magic-box { padding: 0.5em 0.5em; border-radius: 0.8em; text-align: center; }
-        .tm-label { font-size: 1em; font-weight: 500; display: block; opacity: 0.8; }
-        .tm-number { font-size: 2em; font-weight: 800; display: block; }
+        /* Shared */
+        .top-info-bar { display: flex; justify-content: space-between; align-items: center; gap: 1.5em; flex-shrink: 0; }
+        .total-magic-container { display: flex; gap: 1em; }
+        .total-box, .magic-box { padding: 0.5em 1em; border-radius: 0.4em; text-align: center; }
+        .tm-label { font-size: 0.8em; font-weight: 500; display: block; opacity: 0.8; }
+        .tm-number { font-size: 1.8em; font-weight: 800; display: block; }
         .total-box { background-color: #2c3e50F2; color: #ecf0f1; backdrop-filter: blur(5px); }
         .magic-box { background-color: #27ae60F2; color: #ffffff; backdrop-filter: blur(5px); }
         .fade-out { opacity: 0 !important; } .carousel-content { transition: opacity 0.3s ease-in-out; }
 
-        /* --- LAYOUT 1: MODERN TABLE LAYOUT (Styling Updated) --- */
+        /* --- LAYOUT 1: TABLE --- */
         .l1-header { text-align: center; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
-        .l1-title-main { font-weight: 800; }
-        .l1-subtitle { font-weight: 500; margin-left: 0.5em; opacity: 0.9; }
-        .l1-subtitle::before { content: '|'; margin-right: 0.5em; font-weight: 300; }
+        .l1-title-main { font-weight: 800; } .l1-subtitle { font-weight: 500; margin-left: 0.5em; opacity: 0.9; } .l1-subtitle::before { content: '|'; margin-right: 0.5em; font-weight: 300; }
         .l1-table-container { flex-grow: 1; background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); color: #212529; border-radius: 0.5em; padding: 1.2em; }
-        .l1-table { width: 100%; border-collapse: collapse; }
-        .l1-table th, .l1-table td { padding: 0.4em; text-align: center; }
-        .l1-table thead th { font-size: 1.7em; font-weight: 700; color: #000; padding-bottom: 0.1em; border-bottom: 5px solid #c80815; }
+        .l1-table { width: 100%; border-collapse: collapse; } .l1-table th, .l1-table td { padding: 0.4em; text-align: center; }
+        .l1-table thead th { font-size: 1.3em; font-weight: 700; color: #000; padding-bottom: 0.6em; border-bottom: 2px solid #adb5bd; }
         .l1-table thead th:first-child, .l1-table tbody td:first-child { text-align: left; }
-        .l1-table tbody tr { font-size: 1.4em; font-weight: 500; border-bottom: 2px solid #c80815; }
-        .l1-table tbody tr:last-child { border-bottom: none; }
-        .l1-table tbody td:first-child { font-weight: 700; }
+        .l1-table tbody tr { font-size: 1.2em; font-weight: 500; border-bottom: 1px solid #ced4da; }
+        .l1-table tbody tr:last-child { border-bottom: none; } .l1-table tbody td:first-child { font-weight: 700; }
 
-        /* --- LAYOUT 2: CARDS LAYOUT --- */
+        /* --- LAYOUT 2: CARDS --- */
         .l2-header { text-align: center; }
         .l2-title-main { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
         .l2-title-subtitle { font-weight: 500; margin-top: 0.2em; text-shadow: 1px 1px 4px rgba(0,0,0,0.5); opacity: 0.9; }
         .l2-content { flex-grow: 1; display: grid; grid-template-columns: repeat(var(--card-count, 4), 1fr); gap: 1.5em; }
-        .l2-card { background-color: rgba(10, 10, 10, 0.75); border-radius: 0.8em; text-align: center; padding: 1.2em 0.6em; border-top: 1em solid; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; }
-        .l2-party-name { font-size: 3em; font-weight: 700; text-transform: uppercase; margin-bottom: 0.3em; }
+        .l2-card { background-color: rgba(10, 10, 10, 0.75); border-radius: 0.5em; text-align: center; padding: 1.2em 0.6em; border-top: 0.5em solid; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; }
+        .l2-party-name { font-size: 1.8em; font-weight: 700; text-transform: uppercase; margin-bottom: 0.3em; }
         .l2-seat-count { font-size: 6em; font-weight: 800; line-height: 1; }
+        
+        /* --- LAYOUT 3: LEADER CARD (Creative Redesign) --- */
+        #display-layout3 { justify-content: center; align-items: center; overflow: hidden; }
+        .l3-content { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; }
+        .l3-image-container { position: absolute; z-index: 3; left: 0; bottom: 0; width: 45%; height: 90%; }
+        .l3-image-container img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6)); }
+        .l3-info-container { z-index: 2; width: 100%; text-align: right; padding-right: 5%; }
+        .l3-party-name { font-size: 4em; font-weight: 800; line-height: 1.1; color: var(--party-color, #ccc); text-shadow: 2px 2px 8px rgba(0,0,0,0.6); }
+        .l3-seat-count { font-size: 35em; font-weight: 800; line-height: 1; color: var(--party-color, #ccc); }
+        
+        /* --- LAYOUT 4: BAR CHART (Simple Column Redesign) --- */
+        .l4-header { text-align: center; font-size: 2.5em; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
+        .l4-chart-container { flex-grow: 1; display: flex; justify-content: space-around; align-items: flex-end; gap: 1em; padding: 1em; background: rgba(0,0,0,0.3); border-radius: 0.5em; backdrop-filter: blur(5px); }
+        .l4-bar-wrapper { width: 50%; height: 80%; flex: 1; text-align: center; display: flex; flex-direction: column-reverse; align-items: center; }
+        .l4-bar { width: 70%; background-color: #fff; border-radius: 0.3em 0.3em 0 0; position: relative; transition: height 0.5s ease-out; }
+        .l4-bar-value { font-size: 2em; font-weight: 800; color: #fff; text-shadow: 1px 1px 3px #000; position: absolute; top: -2em; left: 50%; transform: translateX(-50%); }
+        .l4-bar-label { font-size: 1.2em; font-weight: 700; margin-top: 0.5em; color: #fff; text-shadow: 1px 1px 3px #000; }
+
+        /* --- LAYOUT 5: PIE CHART (Custom Legend) --- */
+        #display-layout5 { flex-direction: row; align-items: center; gap: 2em; }
+        .l5-header { position: absolute; top: 2.5%; left: 50%; transform: translateX(-50%); font-size: 2.5em; font-weight: 800; text-shadow: 1px 1px 6px rgba(0,0,0,0.7); }
+        .l5-chart-wrapper { width: 50%; height: 80%; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); position: relative; }
+        .l5-halfline { content: ''; position: absolute; bottom: 0; left: 12.5%; width: 75%; height: 0.2em; background-color: rgba(255,255,255,0.5); border-radius: 0.1em; }
+        .l5-custom-legend { width: 40%; height: 80%; display: flex; flex-direction: column; justify-content: center; gap: 1em; }
+        .l5-legend-item { display: flex; align-items: center; gap: 1em; background: rgba(0,0,0,0.2); padding: 0.5em; border-radius: 0.3em; }
+        .l5-legend-color-box { width: 1.5em; height: 3em; border-radius: 0.2em; flex-shrink: 0; }
+        .l5-legend-image { width: 4em; height: 4em; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); }
+        .l5-legend-label { font-size: 1.5em; font-weight: 700; flex-grow: 1; }
+        .l5-legend-value { font-size: 2.5em; font-weight: 800; }
+
+        /* --- LAYOUT 6: HIGHLIGHT (Full Screen Statement) --- */
+        #display-layout6 { justify-content: center; align-items: center; padding: 0; background: rgba(10,10,10,0.8); backdrop-filter: blur(10px); }
+        .l6-content { width: 80%; text-align: center; }
+        .l6-header { font-size: 2.5em; font-weight: 800; text-transform: uppercase; color: #e74c3c; letter-spacing: 2px; }
+        .l6-headline { font-size: 5em; font-weight: 700; line-height: 1.2; margin-top: 0.2em; transition: opacity 0.3s; }
+        .l6-line { width: 10em; height: 0.3em; background: #e74c3c; margin: 1em auto; }
+        
+        /* --- LAYOUT 7: BBC STYLE (Redesigned) --- */
+        #display-layout7 { background-color: transparent; }
+        .l7-content-wrapper { width: 100%; height: 100%; background-color: #fff; color: #333; display: flex; flex-direction: column; transform: skewX(-5deg); }
+        .l7-header { width: 100%; color: #333; font-size: 2.5em; font-weight: 700; padding: 0.5em 2em; flex-shrink: 0; transform: skewX(5deg); }
+        .l7-candidates-container { flex-grow: 1; display: flex; justify-content: center; gap: 3em; transform: skewX(5deg); }
+        .l7-candidate { width: 10%; text-align: center; }
+        .l7-image-block { position: relative; margin-bottom: 1em; aspect-ratio: 3/4; }
+        .l7-image-block .l7-color-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; }
+        .l7-image-block img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+        .l7-seal { position: absolute; z-index: 3; top: 0.5em; right: 0.5em; background: #27ae60; color: #fff; font-size: 1.2em; font-weight: 800; width: 5em; height: 5em; border-radius: 50%; display: grid; place-items: center; transform: rotate(15deg); }
+        .l7-seal.loser { background: #c0392b; }
+        .l7-info-block { display: flex; flex-direction: end; gap: 0.2em; }
+        .l7-name { font-size: 1.8em; font-weight: 800; }
+        .l7-party, .l7-constituency { font-size: 1.3em; color: #555; }
+        .l7-percentage { font-size: 3.5em; font-weight: 800; margin-top: 0.2em; }
+        .l7-footer { width: 100%; border-top: 1px solid #ccc; padding: 0.5em 2em; color: #555; font-size: 1em; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; transform: skewX(5deg); }
+        .l7-logo { height: 1.8em; width: auto; }
     </style>
 </head>
 <body>
@@ -58,6 +108,7 @@
             <iframe id="bg-youtube" class="hidden" frameborder="0" allow="autoplay; encrypted-media"></iframe>
         </div>
         <div class="broadcast-container">
+            <!-- All 7 Layouts -->
             <div id="display-layout1" class="layout hidden">
                 <div class="top-info-bar">
                     <h1 class="l1-header"><span id="d1-main-title" class="l1-title-main"></span><span id="d1-subtitle" class="l1-subtitle"></span></h1>
@@ -79,17 +130,60 @@
                 </div>
                 <div id="l2-carousel-content" class="l2-content carousel-content"></div>
             </div>
+
+            <div id="display-layout3" class="layout hidden carousel-content">
+                <div class="l3-content">
+                    <div class="l3-info-container">
+                        <div id="l3-party-name" class="l3-party-name"></div>
+                        <div id="l3-seat-count" class="l3-seat-count"></div>
+                    </div>
+                    <div class="l3-image-container"><img id="l3-leader-image"></div>
+                </div>
+            </div>
+
+            <div id="display-layout4" class="layout hidden">
+                <h1 id="l4-main-title" class="l4-header"></h1>
+                <div id="l4-chart-container" class="l4-chart-container"></div>
+            </div>
+
+            <div id="display-layout5" class="layout hidden">
+                 <h1 id="l5-main-title" class="l5-header"></h1>
+                 <div class="l5-chart-wrapper"><canvas id="l5-pie-chart"></canvas><div id="l5-halfline" class="l5-halfline hidden"></div></div>
+                 <div id="l5-custom-legend" class="l5-custom-legend"></div>
+            </div>
+
+            <div id="display-layout6" class="layout hidden carousel-content">
+                 <div class="l6-content">
+                     <div id="l6-header" class="l6-header"></div>
+                     <div class="l6-line"></div>
+                     <h1 id="l6-headline" class="l6-headline"></h1>
+                 </div>
+            </div>
+
+            <div id="display-layout7" class="layout hidden carousel-content">
+                 <div class="l7-content-wrapper">
+                    <h1 id="l7-main-title" class="l7-header"></h1>
+                    <div id="l7-candidates-container" class="l7-candidates-container"></div>
+                    <div class="l7-footer">
+                        <span id="l7-source"></span>
+                        <img id="l7-logo" class="l7-logo">
+                    </div>
+                 </div>
+            </div>
         </div>
     </div>
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <script>
-        // =========================================================================
-        // === PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE                     ===
-        // =========================================================================
+        // =================================================================
+        // SCRIPT START
+        // =================================================================
+
+        // 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
         const firebaseConfig = {
           apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
   authDomain: "exit-poll-gfx.firebaseapp.com",
@@ -98,28 +192,31 @@
   messagingSenderId: "1006050900757",
   appId: "1:1006050900757:web:dda56f6a3c2ef27bc1071c"
         };
-        // =========================================================================
-
+        
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const broadcastDataRef = database.ref('broadcastData');
         
         const getEl = (id) => document.getElementById(id);
         const defaultData = {
-            shared: { bgVideoUrl: "https://videos.pexels.com/video-files/3209828/3209828-hd_1280_720_25fps.mp4", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
-            layout1: { mainTitle: "BIHAR ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'NDA', p1: '15', p2: '120', p3: '135'}, { ch: 'MGB', p1: '10', p2: '85', p3: '95'}, { ch: 'LJP', p1: '2', p2: '3', p3: '5'}, { ch: 'OTHERS', p1: '1', p2: '7', p3: '8'}, { ch: 'JDU', p1: '5', p2: '40', p3: '45'}, { ch: 'RJD', p1: '8', p2: '67', p3: '75'} ] },
-            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Today's Chanakya", isLive: true, cards: [ { name: 'NDA', seats: '155', color: '#f39c12' }, { name: 'MGB', seats: '83', color: '#27ae60' }, { name: 'LJP', seats: '0', color: '#3498db' }, { name: 'OTH', seats: '5', color: '#555555' } ] } ] }
+            shared: { bgVideoUrl: "", bgColor: "#1a1a1a", totalSeats: "243", magicNumber: "122", activeLayout: 'layout1', l1_titleSize: 2.2, l1_subtitleSize: 1, l2_titleSize: 2.5, l2_subtitleSize: 1.2 },
+            layout1: { mainTitle: "ELECTION RESULTS", subtitle: "Live Analysis", headers: { h1: "Leading", h2: "Won", h3: "Total" }, rows: [ { ch: 'Party A', p1: '15', p2: '120', p3: '135'}, { ch: 'Party B', p1: '10', p2: '85', p3: '95'} ] },
+            layout2: { cardSets: [ { title: "EXIT POLL", subtitle: "Survey Co.", isLive: true, cards: [ { name: 'Party A', seats: '155', color: '#f39c12' }, { name: 'Party B', seats: '83', color: '#27ae60' } ] } ] },
+            layout3: { leaderSets: [ { name: 'PARTY NAME', seats: 160, color: '#ff9933', image: 'https://i.ibb.co/JqjT2W6/nitish-kumar-png.png' } ] },
+            layout4: { title: "Party Standings", max: 200, bars: [ { label: 'Party A', value: 155, color: '#f39c12', image: '' }, { label: 'Party B', value: 83, color: '#27ae60', image: '' } ] },
+            layout5: { title: "Seat Share Projection", type: 'pie', slices: [ { label: 'Party A', value: 155, color: '#f39c12', image: '' }, { label: 'Party B', value: 83, color: '#27ae60', image: '' } ] },
+            layout6: { highlightSets: [ { header: 'BREAKING NEWS', headline: 'This is a sample headline for the broadcast' } ] },
+            layout7: { candidateSets: [ { title: "2025 Election Results", source: "Source: National Election Committee", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/BBC_Logo_2021.svg/200px-BBC_Logo_2021.svg.png", c1: { name: "Candidate One", party: "Party A", constituency: "Capital City", percentage: "50.15%", image: "https://i.ibb.co/JqjT2W6/nitish-kumar-png.png", color: "#007bff", seal: "none" }, c2: { name: "Candidate Two", party: "Party B", constituency: "Northern Province", percentage: "49.85%", image: "https://i.ibb.co/hMhYdY8/modi-cartoon.png", color: "#e83e8c", seal: "none" } } ] }
         };
 
-        let l1CarouselInterval, l2CarouselInterval, currentVideoBlobUrl;
-        const L1_PAGE_SIZE = 5, CAROUSEL_SPEED = 10000;
+        let activeIntervals = []; let currentVideoBlobUrl; let pieChartInstance;
+        const CAROUSEL_SPEED = 10000;
 
-        function updateElement(id, value) { const el = getEl(id); if (el) el.innerText = value || ''; }
+        function updateElement(id, value, prop='innerText') { const el = getEl(id); if (el) el[prop] = value || ''; }
         
         function handleBackground(url, color, fileData) {
             const videoEl = getEl('bg-video'), youtubeEl = getEl('bg-youtube'), container = getEl('background-media');
-            videoEl.classList.add('hidden'); youtubeEl.classList.add('hidden');
-            container.style.backgroundColor = color;
+            videoEl.classList.add('hidden'); youtubeEl.classList.add('hidden'); container.style.backgroundColor = color;
             if (currentVideoBlobUrl) { URL.revokeObjectURL(currentVideoBlobUrl); currentVideoBlobUrl = null; }
             let finalUrl = fileData ? URL.createObjectURL(new Blob([Uint8Array.from(atob(fileData.split(',')[1]), c => c.charCodeAt(0))], {type: 'video/mp4'})) : url;
             if (finalUrl && finalUrl.startsWith('blob:')) currentVideoBlobUrl = finalUrl;
@@ -132,65 +229,162 @@
             }
         }
 
-        function showTablePage(data, page) {
-            const tbody = getEl('l1-tbody'), thead = getEl('l1-thead'), container = getEl('display-layout1').querySelector('.carousel-content');
-            const headers = data.headers || {}, start = page * L1_PAGE_SIZE, end = start + L1_PAGE_SIZE, pageRows = (data.rows || []).slice(start, end);
-            container.classList.add('fade-out');
-            setTimeout(() => {
-                thead.innerHTML = `<tr><th>Party / Alliance</th><th>${headers.h1||''}</th><th>${headers.h2||''}</th><th>${headers.h3||''}</th></tr>`;
-                tbody.innerHTML = pageRows.map(row => `<tr><td>${row.ch||''}</td><td>${row.p1||''}</td><td>${row.p2||''}</td><td>${row.p3||''}</td></tr>`).join('');
-                container.classList.remove('fade-out');
-            }, 300);
+        function startCarousel(data, totalItems, pageSize, showPageFn) {
+            const numPages = Math.ceil(totalItems / pageSize); let currentPage = 0;
+            if (numPages > 0) showPageFn(data, 0); else showPageFn([], 0);
+            if (numPages <= 1) return;
+            const intervalId = setInterval(() => { currentPage = (currentPage + 1) % numPages; showPageFn(data, currentPage); }, CAROUSEL_SPEED);
+            activeIntervals.push(intervalId);
         }
 
-        function startCarousel(data, totalItems, pageSize, intervalVar, showPageFn) {
-            clearInterval(intervalVar);
-            const numPages = Math.ceil(totalItems / pageSize);
-            let currentPage = 0;
-            if (numPages > 0) showPageFn(data, 0); else showPageFn({headers:{}, rows:[]}, 0);
-            if (numPages <= 1) return null;
-            return setInterval(() => { currentPage = (currentPage + 1) % numPages; showPageFn(data, currentPage); }, CAROUSEL_SPEED);
+        function renderTableLayout(data, shared) {
+            updateElement('d1-total-seats', shared.totalSeats); updateElement('d1-magic-no', shared.magicNumber);
+            updateElement('d1-main-title', data.mainTitle); updateElement('d1-subtitle', data.subtitle);
+            getEl('d1-main-title').style.fontSize = `${shared.l1_titleSize || 2.2}em`; getEl('d1-subtitle').style.fontSize = `${shared.l1_subtitleSize || 1}em`;
+            startCarousel(data, (data.rows || []).length, 5, (d,p) => {
+                const tbody = getEl('l1-tbody'), thead = getEl('l1-thead'), container = getEl('display-layout1').querySelector('.carousel-content');
+                const headers = d.headers || {}, start = p * 5, end = start + 5, pageRows = (d.rows || []).slice(start, end);
+                container.classList.add('fade-out');
+                setTimeout(() => {
+                    thead.innerHTML = `<tr><th>Party / Alliance</th><th>${headers.h1||''}</th><th>${headers.h2||''}</th><th>${headers.h3||''}</th></tr>`;
+                    tbody.innerHTML = pageRows.map(row => `<tr><td>${row.ch||''}</td><td>${row.p1||''}</td><td>${row.p2||''}</td><td>${row.p3||''}</td></tr>`).join('');
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
         }
-
-        function showCardSet(liveSets, setIndex) {
-            const container = getEl('l2-carousel-content');
-            if (!liveSets || liveSets.length === 0) { container.innerHTML = ''; updateElement('d2-main-title',''); updateElement('d2-subtitle',''); return; }
-            const setData = liveSets[setIndex];
-            container.classList.add('fade-out');
-            setTimeout(() => {
-                updateElement('d2-main-title', setData.title); updateElement('d2-subtitle', setData.subtitle);
-                container.style.setProperty('--card-count', setData.cards.length);
-                container.innerHTML = setData.cards.map(card => `<div class="l2-card" style="border-color: ${card.color};"><h2 class="l2-party-name">${card.name}</h2><p class="l2-seat-count">${card.seats}</p></div>`).join('');
-                container.classList.remove('fade-out');
-            }, 300);
+        function renderCardLayout(data, shared) {
+            updateElement('d2-total-seats', shared.totalSeats); updateElement('d2-magic-no', shared.magicNumber);
+            const liveSets = (data.cardSets || []).filter(set => set.isLive);
+            getEl('d2-main-title').style.fontSize = `${shared.l2_titleSize || 2.5}em`; getEl('d2-subtitle').style.fontSize = `${shared.l2_subtitleSize || 1.2}em`;
+            startCarousel(liveSets, liveSets.length, 1, (d,i) => {
+                const container = getEl('l2-carousel-content'); if (!d || d.length === 0) { container.innerHTML = ''; updateElement('d2-main-title',''); updateElement('d2-subtitle',''); return; }
+                const setData = d[i]; container.classList.add('fade-out');
+                setTimeout(() => {
+                    updateElement('d2-main-title', setData.title); updateElement('d2-subtitle', setData.subtitle);
+                    container.style.setProperty('--card-count', setData.cards.length);
+                    container.innerHTML = setData.cards.map(card => `<div class="l2-card" style="border-color: ${card.color};"><h2 class="l2-party-name">${card.name}</h2><p class="l2-seat-count">${card.seats}</p></div>`).join('');
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
         }
-
+        function renderLeaderLayout(data) {
+            startCarousel(data.leaderSets || [], (data.leaderSets || []).length, 1, (d,i) => {
+                const container = getEl('display-layout3'), item = d[i]; container.classList.add('fade-out');
+                setTimeout(()=> {
+                    container.style.setProperty('--party-color', item.color);
+                    updateElement('l3-party-name', item.name); updateElement('l3-seat-count', item.seats);
+                    updateElement('l3-leader-image', item.image, 'src');
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
+        }
+        function renderBarChartLayout(data) {
+            updateElement('l4-main-title', data.title);
+            const container = getEl('l4-chart-container'); container.innerHTML = '';
+            const maxVal = data.max || Math.max(...(data.bars || []).map(b => Number(b.value) || 0));
+            (data.bars || []).forEach(bar => {
+                const height = maxVal > 0 ? ((Number(bar.value) || 0) / maxVal) * 100 : 0;
+                container.innerHTML += `<div class="l4-bar-wrapper"><div class="l4-bar-label">${bar.label}</div><div class="l4-bar" style="height: ${height}%; background-color: ${bar.color};"><div class="l4-bar-value">${bar.value}</div></div></div>`;
+            });
+        }
+        function renderPieChartLayout(data) {
+            updateElement('l5-main-title', data.title);
+            if (pieChartInstance) pieChartInstance.destroy();
+            const slices = data.slices || [];
+            getEl('l5-halfline').classList.toggle('hidden', data.type !== 'doughnut');
+            const legendContainer = getEl('l5-custom-legend'); legendContainer.innerHTML = '';
+            slices.forEach(slice => {
+                legendContainer.innerHTML += `<div class="l5-legend-item"><div class="l5-legend-color-box" style="background-color: ${slice.color};"></div><img src="${slice.image}" class="l5-legend-image"><span class="l5-legend-label">${slice.label}</span><span class="l5-legend-value">${slice.value}</span></div>`;
+            });
+            pieChartInstance = new Chart(getEl('l5-pie-chart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels: slices.map(s => s.label), datasets: [{ data: slices.map(s => s.value), backgroundColor: slices.map(s => s.color), borderWidth: 2, borderColor: '#333' }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: data.type === 'doughnut' ? '60%' : '0%', circumference: data.type === 'doughnut' ? 180 : 360, rotation: data.type === 'doughnut' ? -90 : 0, plugins: { legend: { display: false } } }
+            });
+        }
+        function renderHighlightLayout(data) {
+            startCarousel(data.highlightSets || [], (data.highlightSets || []).length, 1, (d,i) => {
+                const item = d[i];
+                const headlines = (item.headline || '').split('|');
+                let headlineIndex = 0;
+                
+                const showHeadline = () => {
+                    const headlineEl = getEl('l6-headline');
+                    headlineEl.style.opacity = 0;
+                    setTimeout(()=> {
+                        updateElement('l6-header', item.header);
+                        updateElement('l6-headline', headlines[headlineIndex]);
+                        headlineEl.style.opacity = 1;
+                        headlineIndex = (headlineIndex + 1) % headlines.length;
+                    }, 300);
+                }
+                if (activeIntervals.find(id => String(id).includes('headline'))) clearInterval(activeIntervals.pop());
+                if (headlines.length > 1) { const intervalId = setInterval(showHeadline, 4000); intervalId._ms = 'headline'; activeIntervals.push(intervalId); }
+                showHeadline();
+            });
+        }
+        function renderTwoCandidateLayout(data) {
+            startCarousel(data.candidateSets || [], (data.candidateSets || []).length, 1, (d,i) => {
+                const container = getEl('l7-candidates-container'), item = d[i]; container.classList.add('fade-out');
+                setTimeout(()=> {
+                    updateElement('l7-main-title', item.title); updateElement('l7-source', item.source); updateElement('l7-logo', item.logo, 'src');
+                    let html = '';
+                    [item.c1, item.c2].forEach(c => {
+                        if (!c) return;
+                        html += `<div class="l7-candidate">
+                            <div class="l7-image-block">
+                                <div class="l7-color-bg" style="background-color:${c.color}"></div>
+                                <img src="${c.image}">
+                                ${c.seal === 'winner' ? '<div class="l7-seal">WINNER</div>' : ''}
+                                ${c.seal === 'loser' ? '<div class="l7-seal loser">LOSER</div>' : ''}
+                            </div>
+                            <div class="l7-info-block">
+                                <div class="l7-name">${c.name}</div>
+                                <div class="l7-party">${c.party}</div>
+                                <div class="l7-constituency">${c.constituency}</div>
+                                <div class="l7-percentage">${c.percentage}</div>
+                            </div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                    container.classList.remove('fade-out');
+                }, 300);
+            });
+        }
+        
         function updateDisplay(data) {
-            if (!data) return;
-            const shared = data.shared || {};
-            const l1 = data.layout1 || {};
-            const l2 = data.layout2 || {};
+            if (!data) data = defaultData;
+            const shared = data.shared || defaultData.shared;
+            activeIntervals.forEach(clearInterval); activeIntervals = [];
 
             handleBackground(shared.bgVideoUrl, shared.bgColor, shared.bgVideoFile);
-            getEl('display-layout1').classList.toggle('hidden', shared.activeLayout !== 'layout1');
-            getEl('display-layout2').classList.toggle('hidden', shared.activeLayout !== 'layout2');
 
-            if (shared.activeLayout === 'layout1') {
-                updateElement('d1-total-seats', shared.totalSeats); updateElement('d1-magic-no', shared.magicNumber);
-                updateElement('d1-main-title', l1.mainTitle); updateElement('d1-subtitle', l1.subtitle);
-                getEl('d1-main-title').style.fontSize = `${shared.l1_titleSize || 2.2}em`; getEl('d1-subtitle').style.fontSize = `${shared.l1_subtitleSize || 1}em`;
-                l1CarouselInterval = startCarousel(l1, (l1.rows || []).length, L1_PAGE_SIZE, l1CarouselInterval, showTablePage);
-            } else {
-                updateElement('d2-total-seats', shared.totalSeats); updateElement('d2-magic-no', shared.magicNumber);
-                const liveSets = (l2.cardSets || []).filter(set => set.isLive);
-                getEl('d2-main-title').style.fontSize = `${shared.l2_titleSize || 2.5}em`; getEl('d2-subtitle').style.fontSize = `${shared.l2_subtitleSize || 1.2}em`;
-                l2CarouselInterval = startCarousel(liveSets, liveSets.length, 1, l2CarouselInterval, (d, i) => showCardSet(d, i));
+            document.querySelectorAll('.layout').forEach(el => el.classList.add('hidden'));
+            const activeLayoutEl = getEl(`display-${shared.activeLayout}`);
+            if(activeLayoutEl) activeLayoutEl.classList.remove('hidden');
+
+            switch(shared.activeLayout) {
+                case 'layout1': renderTableLayout(data.layout1 || {}, shared); break;
+                case 'layout2': renderCardLayout(data.layout2 || {}, shared); break;
+                case 'layout3': renderLeaderLayout(data.layout3 || {}); break;
+                case 'layout4': renderBarChartLayout(data.layout4 || {}); break;
+                case 'layout5': renderPieChartLayout(data.layout5 || {}); break;
+                case 'layout6': renderHighlightLayout(data.layout6 || {}); break;
+                case 'layout7': renderTwoCandidateLayout(data.layout7 || {}); break;
             }
         }
         
+        // Listen for real-time data changes from Firebase
+        const broadcastDataRef = database.ref('broadcastData');
         broadcastDataRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            updateDisplay(data || defaultData);
+            if (data) {
+                console.log("Received data update from Firebase.");
+                updateDisplay(data);
+            } else {
+                console.log("No data in Firebase, using default data.");
+                updateDisplay(defaultData);
+            }
         });
     </script>
 </body>
