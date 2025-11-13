@@ -17,7 +17,7 @@
         input, select, textarea { width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #555; background-color: #3e3e3e; color: #fff; font-size: 1em; }
         input[type="file"] { padding: 3px; }
         input[type="number"] { padding-right: 2px; }
-        input[type="color"] { padding: 0; height: 40px; background-color: transparent; border: none; cursor: pointer; }
+        input[type="color"] { padding: 0; height: 40px; background-color: transparent; border: none; }
         input[type="checkbox"] { width: auto; margin-right: 10px; transform: scale(1.2); }
         textarea { min-height: 80px; resize: vertical; }
         button { padding: 10px 15px; font-size: 1em; font-weight: 700; cursor: pointer; border: none; border-radius: 5px; background-color: #5a5a5a; color: #fff; }
@@ -33,11 +33,9 @@
         .card-controls { display: grid; grid-template-columns: 1.5fr 1fr 80px; gap: 10px; align-items: center; }
         .card-management-buttons { display: flex; gap: 10px; margin-top: 10px; }
         .live-btn { background-color: #e67e22; } .live-btn.active { background-color: #27ae60; box-shadow: 0 0 10px #27ae60; }
-        .bar-controls, .slice-controls { display: grid; grid-template-columns: repeat(4, 1fr) 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
+        .bar-controls, .slice-controls { display: grid; grid-template-columns: 1.5fr 1fr 80px 1.5fr 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
         .l8-bar-controls { display: grid; grid-template-columns: 1.5fr 1fr 80px 40px; gap: 10px; align-items: center; margin-bottom: 5px; }
         .l8-group-controls button { margin-right: 10px;}
-        .image-upload-group label { font-size: 0.9em; }
-        .image-upload-group input[type="text"] { margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -46,9 +44,9 @@
         
         <fieldset><legend>Global Settings</legend>
             <div class="grid">
-                <div class="control-group"><label>BG Video URL</label><input type="text" id="c-bgVideoUrl"></div>
+                <div class="control-group"><label>Background Video URL</label><input type="text" id="c-bgVideoUrl"></div>
                 <div class="control-group"><label>OR Upload Local Video</label><input type="file" id="c-bgVideoFile" accept="video/*"></div>
-                <div class="control-group"><label>Fallback BG Color</label><input type="color" id="c-bgColor" value="#1a1a1a"></div>
+                <div class="control-group"><label>Fallback BG Color</label><input type="color" id="c-bgColor"></div>
                 <div class="control-group"><label>Total Seats</label><input type="text" id="c-totalSeats"></div>
                 <div class="control-group"><label>Magic Number</label><input type="text" id="c-magicNumber"></div>
             </div>
@@ -66,8 +64,41 @@
             </div>
         </fieldset>
         
-        <div id="controls-layout1" class="hidden"><!-- ... HTML is unchanged ... --></div>
-        <div id="controls-layout2" class="hidden"><!-- ... HTML is unchanged ... --></div>
+        <!-- ALL LAYOUT CONTROL PANELS -->
+        <div id="controls-layout1" class="hidden">
+            <h2>Table Layout Controls</h2>
+            <fieldset><legend>Titles & Font Sizes (em)</legend>
+                <div class="grid">
+                    <div class="control-group"><label>Main Title</label><input type="text" id="c1-mainTitle"></div>
+                    <div class="control-group"><label>Subtitle</label><input type="text" id="c1-subtitle"></div>
+                    <div class="control-group"><label>Title Size</label><input type="number" id="c1_titleSize" step="0.1"></div>
+                    <div class="control-group"><label>Subtitle Size</label><input type="number" id="c1_subtitleSize" step="0.1"></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Table Data (Rotates every 5 rows)</legend>
+                <div class="table-row-controls" style="grid-template-columns: 2fr 1fr 1fr 1fr 40px;">
+                    <label>Party / Alliance</label><input type="text" id="c1-header1"><input type="text" id="c1-header2"><input type="text" id="c1-header3"><span></span>
+                </div>
+                <div id="table-rows-container"></div><button id="add-row-btn" style="margin-top: 15px;">Add Row</button>
+            </fieldset>
+            <button id="go-live-layout1" class="go-live-layout-btn">Go Live with Table Layout</button>
+        </div>
+        
+        <div id="controls-layout2" class="hidden">
+            <h2>Card Layout Controls</h2>
+             <fieldset><legend>Font Sizes (em)</legend>
+                <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="control-group"><label>Title Size</label><input type="number" id="c2_titleSize" step="0.1"></div>
+                    <div class="control-group"><label>Subtitle Size</label><input type="number" id="c2_subtitleSize" step="0.1"></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Carousel Sets (Only "Live" sets will show)</legend>
+                <div id="card-sets-container"></div>
+                <button id="add-set-btn" style="margin-top: 15px;">Add New Card Set (Clone Last)</button>
+            </fieldset>
+            <button id="go-live-layout2" class="go-live-layout-btn">Go Live with Card Layout</button>
+        </div>
+
         <div id="controls-layout3" class="hidden">
             <h2>Leader Card Controls</h2>
             <fieldset><legend>Carousel Sets</legend>
@@ -76,8 +107,9 @@
             </fieldset>
             <button id="go-live-layout3" class="go-live-layout-btn">Go Live with Leader Layout</button>
         </div>
+
         <div id="controls-layout4" class="hidden">
-             <h2>Bar Chart Controls</h2>
+            <h2>Bar Chart Controls</h2>
             <fieldset><legend>Title & Max Value</legend>
                 <div class="grid">
                     <div class="control-group"><label>Main Title</label><input type="text" id="c4-title"></div>
@@ -90,6 +122,7 @@
             </fieldset>
             <button id="go-live-layout4" class="go-live-layout-btn">Go Live with Bar Chart</button>
         </div>
+
         <div id="controls-layout5" class="hidden">
             <h2>Pie Chart Controls</h2>
             <fieldset><legend>Title & Chart Type</legend>
@@ -104,7 +137,16 @@
             </fieldset>
             <button id="go-live-layout5" class="go-live-layout-btn">Go Live with Pie Chart</button>
         </div>
-        <div id="controls-layout6" class="hidden"><!-- ... HTML is unchanged ... --></div>
+
+        <div id="controls-layout6" class="hidden">
+            <h2>Highlight Controls</h2>
+            <fieldset><legend>Carousel Sets</legend>
+                <div id="l6-sets-container"></div>
+                <button id="add-l6-set-btn" style="margin-top: 15px;">Add New Highlight</button>
+            </fieldset>
+            <button id="go-live-layout6" class="go-live-layout-btn">Go Live with Highlight Layout</button>
+        </div>
+        
         <div id="controls-layout7" class="hidden">
             <h2>Two Candidate Controls</h2>
             <fieldset><legend>Carousel Sets</legend>
@@ -113,7 +155,21 @@
             </fieldset>
             <button id="go-live-layout7" class="go-live-layout-btn">Go Live with Two Candidate Layout</button>
         </div>
-        <div id="controls-layout8" class="hidden"><!-- ... HTML is unchanged ... --></div>
+
+        <div id="controls-layout8" class="hidden">
+            <h2>Comparison Bar Chart Controls</h2>
+            <fieldset><legend>Title & Max Value</legend>
+                <div class="grid">
+                    <div class="control-group"><label>Main Title</label><input type="text" id="c8-title"></div>
+                    <div class="control-group"><label>Chart Maximum Value</label><input type="number" id="c8-max"></div>
+                </div>
+            </fieldset>
+            <fieldset><legend>Bar Groups</legend>
+                <div id="l8-groups-container"></div>
+                <button id="add-l8-group-btn" style="margin-top: 15px;">Add Group</button>
+            </fieldset>
+            <button id="go-live-layout8" class="go-live-layout-btn">Go Live with Comparison Chart</button>
+        </div>
     </div>
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -122,7 +178,7 @@
     <script>
         // 1. PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
         const firebaseConfig = {
-         apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
+          apiKey: "AIzaSyCsl8PVa4JpTiXOYcxjXACwQhiTQB7pXpc",
   authDomain: "exit-poll-gfx.firebaseapp.com",
   projectId: "exit-poll-gfx",
   storageBucket: "exit-poll-gfx.firebasestorage.app",
@@ -140,7 +196,7 @@
             shared: { bgVideoUrl: "", bgColor: "#1a1a1a", totalSeats: "0", magicNumber: "0", activeLayout: 'layout1' },
             layout1: { mainTitle: "Results", subtitle: "", headers: { h1: "Lead", h2: "Won", h3: "Total" }, rows: [ ] },
             layout2: { cardSets: [ ] },
-            layout3: { leaderSets: [ { name: 'LEADER', seats: 0, color: '#cccccc', image: '', image_data: '' } ] },
+            layout3: { leaderSets: [ { name: 'LEADER', seats: 0, color: '#cccccc', image: '' } ] },
             layout4: { title: "Standings", max: 100, bars: [ ] },
             layout5: { title: "Seat Share", type: 'pie', slices: [ ] },
             layout6: { highlightSets: [ { header: 'BREAKING', headline: 'Sample Headline', show_header: true } ] },
@@ -148,48 +204,23 @@
             layout8: { title: "Comparison", max: 100, groups: [ { groupLabel: 'Group A', bars: [ { label: '2020', value: 50, color: '#3498db' }, { label: '2024', value: 75, color: '#2980b9' } ] } ] }
         };
 
-        function fileToBase64(file, callback) {
-            const reader = new FileReader();
-            reader.onload = (event) => callback(event.target.result);
-            reader.onerror = (error) => console.error("File reading error:", error);
-            reader.readAsDataURL(file);
-        }
-        
-        function handleFileUpload(event, urlInputClass) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const urlInput = event.target.closest('div').querySelector(`.${urlInputClass}`);
-            fileToBase64(file, (base64) => {
-                event.target.dataset.base64 = base64;
-                if (urlInput) {
-                    urlInput.value = `[Uploaded: ${file.name}]`;
-                    urlInput.dataset.base64 = ''; // Clear URL's base64 if it had one
-                }
-            });
-        }
-        
-        function handleUrlInput(event, fileInputClass) {
-            const fileInput = event.target.closest('div').querySelector(`.${fileInputClass}`);
-            if (fileInput) fileInput.dataset.base64 = '';
-        }
-
         function gatherDataFromForm() {
             const sharedData = { 
                 bgVideoUrl: getEl('c-bgVideoUrl').value, bgColor: getEl('c-bgColor').value, 
                 totalSeats: getEl('c-totalSeats').value, magicNumber: getEl('c-magicNumber').value, 
                 activeLayout: appState.shared.activeLayout, 
                 l1_titleSize: getEl('c1_titleSize').value, l1_subtitleSize: getEl('c1_subtitleSize').value, 
-                l2_titleSize: getEl('c2_titleSize').value, l2_subtitleSize: getEl('c2_subtitleSize').value,
-                bgVideoFile: getEl('c-bgVideoFile').dataset.base64 || (appState.shared.bgVideoFile || '')
+                l2_titleSize: getEl('c2_titleSize').value, l2_subtitleSize: getEl('c2_subtitleSize').value 
             };
+            if(appState.shared.bgVideoFile) sharedData.bgVideoFile = appState.shared.bgVideoFile;
 
             const layout1 = { mainTitle: getEl('c1-mainTitle').value, subtitle: getEl('c1-subtitle').value, headers: { h1: getEl('c1-header1').value, h2: getEl('c1-header2').value, h3: getEl('c1-header3').value }, rows: Array.from(document.querySelectorAll('#table-rows-container .table-row-controls')).map(row => ({ ch: row.querySelector('.c-ch').value, p1: row.querySelector('.c-p1').value, p2: row.querySelector('.c-p2').value, p3: row.querySelector('.c-p3').value })) };
             const layout2 = { cardSets: Array.from(document.querySelectorAll('#card-sets-container .card-set')).map(setEl => ({ title: setEl.querySelector('.c-set-title').value, subtitle: setEl.querySelector('.c-set-subtitle').value, isLive: setEl.querySelector('.live-btn').classList.contains('active'), cards: Array.from(setEl.querySelectorAll('.card-controls')).map(cardEl => ({ name: cardEl.querySelector('.c-card-name').value, seats: cardEl.querySelector('.c-card-seats').value, color: cardEl.querySelector('.c-card-color').value })) })) };
-            const layout3 = { leaderSets: Array.from(document.querySelectorAll('#l3-sets-container .l3-set')).map(setEl => ({ name: setEl.querySelector('.c-l3-name').value, seats: setEl.querySelector('.c-l3-seats').value, color: setEl.querySelector('.c-l3-color').value, image: setEl.querySelector('.c-l3-image').value, image_data: setEl.querySelector('.c-l3-image-file').dataset.base64 || '' })) };
-            const layout4 = { title: getEl('c4-title').value, max: getEl('c4-max').value, bars: Array.from(document.querySelectorAll('#l4-bars-container .bar-controls')).map(barEl => ({ label: barEl.querySelector('.c-l4-label').value, value: barEl.querySelector('.c-l4-value').value, color: barEl.querySelector('.c-l4-color').value, image: barEl.querySelector('.c-l4-image').value, image_data: barEl.querySelector('.c-l4-image-file').dataset.base64 || '' })) };
-            const layout5 = { title: getEl('c5-title').value, type: getEl('c5-type').value, slices: Array.from(document.querySelectorAll('#l5-slices-container .slice-controls')).map(sliceEl => ({ label: sliceEl.querySelector('.c-l5-label').value, value: sliceEl.querySelector('.c-l5-value').value, color: sliceEl.querySelector('.c-l5-color').value, image: sliceEl.querySelector('.c-l5-image').value, image_data: sliceEl.querySelector('.c-l5-image-file').dataset.base64 || '' })) };
+            const layout3 = { leaderSets: Array.from(document.querySelectorAll('#l3-sets-container .l3-set')).map(setEl => ({ name: setEl.querySelector('.c-l3-name').value, seats: setEl.querySelector('.c-l3-seats').value, color: setEl.querySelector('.c-l3-color').value, image: setEl.querySelector('.c-l3-image').value })) };
+            const layout4 = { title: getEl('c4-title').value, max: getEl('c4-max').value, bars: Array.from(document.querySelectorAll('#l4-bars-container .bar-controls')).map(barEl => ({ label: barEl.querySelector('.c-l4-label').value, value: barEl.querySelector('.c-l4-value').value, color: barEl.querySelector('.c-l4-color').value, image: barEl.querySelector('.c-l4-image').value })) };
+            const layout5 = { title: getEl('c5-title').value, type: getEl('c5-type').value, slices: Array.from(document.querySelectorAll('#l5-slices-container .slice-controls')).map(sliceEl => ({ label: sliceEl.querySelector('.c-l5-label').value, value: sliceEl.querySelector('.c-l5-value').value, color: sliceEl.querySelector('.c-l5-color').value, image: sliceEl.querySelector('.c-l5-image').value })) };
             const layout6 = { highlightSets: Array.from(document.querySelectorAll('#l6-sets-container .l6-set')).map(setEl => ({ header: setEl.querySelector('.c-l6-header').value, headline: setEl.querySelector('.c-l6-headline').value, show_header: setEl.querySelector('.c-l6-show-header').checked })) };
-            const layout7 = { candidateSets: Array.from(document.querySelectorAll('#l7-sets-container .l7-set')).map(setEl => ({ title: setEl.querySelector('.c-l7-title').value, source: setEl.querySelector('.c-l7-source').value, logo: setEl.querySelector('.c-l7-logo').value, logo_data: setEl.querySelector('.c-l7-logo-file').dataset.base64 || '', c1: { name: setEl.querySelector('.c-l7-name1').value, party: setEl.querySelector('.c-l7-party1').value, constituency: setEl.querySelector('.c-l7-constituency1').value, percentage: setEl.querySelector('.c-l7-percentage1').value, image: setEl.querySelector('.c-l7-image1').value, image_data: setEl.querySelector('.c-l7-image1-file').dataset.base64 || '', color: setEl.querySelector('.c-l7-color1').value, seal: setEl.querySelector('.c-l7-seal1').value }, c2: { name: setEl.querySelector('.c-l7-name2').value, party: setEl.querySelector('.c-l7-party2').value, constituency: setEl.querySelector('.c-l7-constituency2').value, percentage: setEl.querySelector('.c-l7-percentage2').value, image: setEl.querySelector('.c-l7-image2').value, image_data: setEl.querySelector('.c-l7-image2-file').dataset.base64 || '', color: setEl.querySelector('.c-l7-color2').value, seal: setEl.querySelector('.c-l7-seal2').value } })) };
+            const layout7 = { candidateSets: Array.from(document.querySelectorAll('#l7-sets-container .l7-set')).map(setEl => ({ title: setEl.querySelector('.c-l7-title').value, source: setEl.querySelector('.c-l7-source').value, logo: setEl.querySelector('.c-l7-logo').value, c1: { name: setEl.querySelector('.c-l7-name1').value, party: setEl.querySelector('.c-l7-party1').value, constituency: setEl.querySelector('.c-l7-constituency1').value, percentage: setEl.querySelector('.c-l7-percentage1').value, image: setEl.querySelector('.c-l7-image1').value, color: setEl.querySelector('.c-l7-color1').value, seal: setEl.querySelector('.c-l7-seal1').value }, c2: { name: setEl.querySelector('.c-l7-name2').value, party: setEl.querySelector('.c-l7-party2').value, constituency: setEl.querySelector('.c-l7-constituency2').value, percentage: setEl.querySelector('.c-l7-percentage2').value, image: setEl.querySelector('.c-l7-image2').value, color: setEl.querySelector('.c-l7-color2').value, seal: setEl.querySelector('.c-l7-seal2').value } })) };
             const layout8 = { title: getEl('c8-title').value, max: getEl('c8-max').value, groups: Array.from(document.querySelectorAll('#l8-groups-container .l8-group')).map(groupEl => ({ groupLabel: groupEl.querySelector('.c-l8-group-label').value, bars: Array.from(groupEl.querySelectorAll('.l8-bar-controls')).map(barEl => ({ label: barEl.querySelector('.c-l8-label').value, value: barEl.querySelector('.c-l8-value').value, color: barEl.querySelector('.c-l8-color').value, })) })) };
 
             return { shared: sharedData, layout1, layout2, layout3, layout4, layout5, layout6, layout7, layout8 };
@@ -203,25 +234,21 @@
         }
 
         function loadDataIntoControls(data) {
-            appState = data || defaultData;
-            const shared = appState.shared || {};
+            appState = data;
+            const shared = data.shared || {};
             getEl('c-bgVideoUrl').value = shared.bgVideoUrl || ''; getEl('c-bgColor').value = shared.bgColor || '#1a1a1a';
             getEl('c-totalSeats').value = shared.totalSeats || '0'; getEl('c-magicNumber').value = shared.magicNumber || '0';
-            const bgVideoFileInput = getEl('c-bgVideoFile'); bgVideoFileInput.dataset.base64 = shared.bgVideoFile || ''; if (shared.bgVideoFile) getEl('c-bgVideoUrl').value = '[Uploaded Video]';
-            
-            ['l1','l2'].forEach(l => { 
-                getEl(`c${l}_titleSize`).value = shared[`${l}_titleSize`] || 2.2;
-                getEl(`c${l}_subtitleSize`).value = shared[`${l}_subtitleSize`] || 1.0;
-            });
+            getEl('c1_titleSize').value = shared.l1_titleSize || 2.2; getEl('c1_subtitleSize').value = shared.l1_subtitleSize || 1.0;
+            getEl('c2_titleSize').value = shared.l2_titleSize || 2.5; getEl('c2_subtitleSize').value = shared.l2_subtitleSize || 1.2;
 
-            const l1 = appState.layout1 || {}; getEl('c1-mainTitle').value = l1.mainTitle || ''; getEl('c1-subtitle').value = l1.subtitle || ''; if(l1.headers) { getEl('c1-header1').value = l1.headers.h1 || ''; getEl('c1-header2').value = l1.headers.h2 || ''; getEl('c1-header3').value = l1.headers.h3 || ''; } getEl('table-rows-container').innerHTML = ''; (l1.rows || []).forEach(addTableRow);
-            const l2 = appState.layout2 || {}; getEl('card-sets-container').innerHTML = ''; (l2.cardSets || []).forEach(addCardSet);
-            const l3 = appState.layout3 || {}; getEl('l3-sets-container').innerHTML = ''; (l3.leaderSets || []).forEach(addLeaderSet);
-            const l4 = appState.layout4 || {}; getEl('c4-title').value = l4.title || ''; getEl('c4-max').value = l4.max || ''; getEl('l4-bars-container').innerHTML = ''; (l4.bars || []).forEach(addBar);
-            const l5 = appState.layout5 || {}; getEl('c5-title').value = l5.title || ''; getEl('c5-type').value = l5.type || 'pie'; getEl('l5-slices-container').innerHTML = ''; (l5.slices || []).forEach(addSlice);
-            const l6 = appState.layout6 || {}; getEl('l6-sets-container').innerHTML = ''; (l6.highlightSets || []).forEach(addHighlightSet);
-            const l7 = appState.layout7 || {}; getEl('l7-sets-container').innerHTML = ''; (l7.candidateSets || []).forEach(addTwoCandidateSet);
-            const l8 = appState.layout8 || {}; getEl('c8-title').value = l8.title || ''; getEl('c8-max').value = l8.max || ''; getEl('l8-groups-container').innerHTML = ''; (l8.groups || []).forEach(addComparisonGroup);
+            const l1 = data.layout1 || {}; getEl('c1-mainTitle').value = l1.mainTitle || ''; getEl('c1-subtitle').value = l1.subtitle || ''; if(l1.headers) { getEl('c1-header1').value = l1.headers.h1 || ''; getEl('c1-header2').value = l1.headers.h2 || ''; getEl('c1-header3').value = l1.headers.h3 || ''; } getEl('table-rows-container').innerHTML = ''; (l1.rows || []).forEach(addTableRow);
+            const l2 = data.layout2 || {}; getEl('card-sets-container').innerHTML = ''; (l2.cardSets || []).forEach(addCardSet);
+            const l3 = data.layout3 || {}; getEl('l3-sets-container').innerHTML = ''; (l3.leaderSets || []).forEach(addLeaderSet);
+            const l4 = data.layout4 || {}; getEl('c4-title').value = l4.title || ''; getEl('c4-max').value = l4.max || ''; getEl('l4-bars-container').innerHTML = ''; (l4.bars || []).forEach(addBar);
+            const l5 = data.layout5 || {}; getEl('c5-title').value = l5.title || ''; getEl('c5-type').value = l5.type || 'pie'; getEl('l5-slices-container').innerHTML = ''; (l5.slices || []).forEach(addSlice);
+            const l6 = data.layout6 || {}; getEl('l6-sets-container').innerHTML = ''; (l6.highlightSets || []).forEach(addHighlightSet);
+            const l7 = data.layout7 || {}; getEl('l7-sets-container').innerHTML = ''; (l7.candidateSets || []).forEach(addTwoCandidateSet);
+            const l8 = data.layout8 || {}; getEl('c8-title').value = l8.title || ''; getEl('c8-max').value = l8.max || ''; getEl('l8-groups-container').innerHTML = ''; (l8.groups || []).forEach(addComparisonGroup);
             
             switchLayout(JSON.parse(localStorage.getItem('controlPanelLayout')) || 'layout1');
         }
@@ -237,16 +264,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const tempDiv = document.createElement('div');
-            // Full HTML for layouts that were previously blank to simplify script
-            tempDiv.innerHTML = `
-                <div id="controls-layout1" class="hidden"><h2>Table Layout Controls</h2><fieldset><legend>Titles & Font Sizes (em)</legend><div class="grid"><div class="control-group"><label>Main Title</label><input type="text" id="c1-mainTitle"></div><div class="control-group"><label>Subtitle</label><input type="text" id="c1-subtitle"></div><div class="control-group"><label>Title Size</label><input type="number" id="c1_titleSize" step="0.1"></div><div class="control-group"><label>Subtitle Size</label><input type="number" id="c1_subtitleSize" step="0.1"></div></div></fieldset><fieldset><legend>Table Data (Rotates every 5 rows)</legend><div class="table-row-controls" style="grid-template-columns: 2fr 1fr 1fr 1fr 40px;"><label>Party / Alliance</label><input type="text" id="c1-header1"><input type="text" id="c1-header2"><input type="text" id="c1-header3"><span></span></div><div id="table-rows-container"></div><button id="add-row-btn" style="margin-top: 15px;">Add Row</button></fieldset><button id="go-live-layout1" class="go-live-layout-btn">Go Live with Table Layout</button></div>
-                <div id="controls-layout2" class="hidden"><h2>Card Layout Controls</h2><fieldset><legend>Font Sizes (em)</legend><div class="grid" style="grid-template-columns: 1fr 1fr;"><div class="control-group"><label>Title Size</label><input type="number" id="c2_titleSize" step="0.1"></div><div class="control-group"><label>Subtitle Size</label><input type="number" id="c2_subtitleSize" step="0.1"></div></div></fieldset><fieldset><legend>Carousel Sets (Only "Live" sets will show)</legend><div id="card-sets-container"></div><button id="add-set-btn" style="margin-top: 15px;">Add New Card Set (Clone Last)</button></fieldset><button id="go-live-layout2" class="go-live-layout-btn">Go Live with Card Layout</button></div>
-                <div id="controls-layout6" class="hidden"><h2>Highlight Controls</h2><fieldset><legend>Carousel Sets</legend><div id="l6-sets-container"></div><button id="add-l6-set-btn" style="margin-top: 15px;">Add New Highlight</button></fieldset><button id="go-live-layout6" class="go-live-layout-btn">Go Live with Highlight Layout</button></div>
-                <div id="controls-layout8" class="hidden"><h2>Comparison Bar Chart Controls</h2><fieldset><legend>Title & Max Value</legend><div class="grid"><div class="control-group"><label>Main Title</label><input type="text" id="c8-title"></div><div class="control-group"><label>Chart Maximum Value</label><input type="number" id="c8-max"></div></div></fieldset><fieldset><legend>Bar Groups</legend><div id="l8-groups-container"></div><button id="add-l8-group-btn" style="margin-top: 15px;">Add Group</button></fieldset><button id="go-live-layout8" class="go-live-layout-btn">Go Live with Comparison Chart</button></div>
-            `;
-            document.querySelector('.container').append(...tempDiv.children);
-
             document.querySelectorAll('.layout-selector button').forEach(btn => btn.addEventListener('click', () => switchLayout(btn.id.replace('select-','').replace('-btn',''))));
             document.querySelectorAll('.go-live-layout-btn').forEach(btn => btn.addEventListener('click', () => goLive(btn.id.replace('go-live-',''))));
             
@@ -259,12 +276,17 @@
             getEl('add-l7-set-btn').addEventListener('click', () => addTwoCandidateSet((appState.layout7 && appState.layout7.candidateSets) ? appState.layout7.candidateSets.slice(-1)[0] : {}));
             getEl('add-l8-group-btn').addEventListener('click', () => addComparisonGroup());
 
-            getEl('c-bgVideoFile').addEventListener('change', e => handleFileUpload(e));
-            getEl('c-bgVideoUrl').addEventListener('input', e => handleUrlInput(e));
-
+            getEl('c-bgVideoFile').addEventListener('change', (e) => {
+                const file = e.target.files[0]; if(!file) return;
+                getEl('c-bgVideoUrl').value = ''; 
+                const reader = new FileReader();
+                reader.onload = (event) => { appState.shared.bgVideoFile = event.target.result; };
+                reader.readAsDataURL(file);
+            });
+            
             broadcastDataRef.once('value').then((snapshot) => {
                 const data = snapshot.val();
-                loadDataIntoControls(data);
+                loadDataIntoControls(data || defaultData);
                 if (!data) { 
                     console.log("No data in Firebase. Initializing with default data.");
                     broadcastDataRef.set(defaultData); 
@@ -274,11 +296,11 @@
         
         function addTableRow(row = {}) { const c = getEl('table-rows-container'); const el = document.createElement('div'); el.className = 'table-row-controls'; el.innerHTML = `<input class="c-ch" value="${row.ch||''}"><input class="c-p1" value="${row.p1||''}"><input class="c-p2" value="${row.p2||''}"><input class="c-p3" value="${row.p3||''}"><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click', () => el.remove()); }
         function addCardSet(setData = {}) { const c = getEl('card-sets-container'); const el = document.createElement('fieldset'); el.className = 'card-set'; const cards = setData.cards || []; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="card-set-header"><div style="flex-grow:1;"><div class="grid"><div class="control-group"><label>Title</label><input class="c-set-title" value="${setData.title||''}"></div><div class="control-group"><label>Subtitle</label><input class="c-set-subtitle" value="${setData.subtitle||''}"></div></div></div><button class="live-btn ${setData.isLive?'active':''}">${setData.isLive?'Live':'Go Live'}</button></div><div class="card-controls-container grid" style="grid-template-columns:1fr 1fr;">${cards.map(card=>`<div class="card-controls"><input class="c-card-name" value="${card.name||''}"><input class="c-card-seats" value="${card.seats||'0'}"><input type="color" class="c-card-color" value="${card.color||'#cccccc'}"></div>`).join('')}</div><div class="card-management-buttons"><button class="add-card">+ Card</button><button class="remove-card">- Card</button><button class="remove-btn">Remove Set</button></div>`; c.appendChild(el); const cardC=el.querySelector('.card-controls-container'); el.querySelector('.add-card').addEventListener('click',()=>{if(cardC.children.length<5)cardC.insertAdjacentHTML('beforeend',`<div class="card-controls"><input class="c-card-name" value="New"><input class="c-card-seats" value="0"><input type="color" class="c-card-color" value="#dddddd"></div>`)}); el.querySelector('.remove-card').addEventListener('click',()=>{if(cardC.children.length>1)cardC.lastElementChild.remove()}); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove()); el.querySelector('.live-btn').addEventListener('click',(e)=>{e.target.classList.toggle('active');e.target.innerText=e.target.classList.contains('active')?'Live':'Go Live'});}
-        function addLeaderSet(set = {}) { const c = getEl('l3-sets-container'); const el = document.createElement('div'); el.className = 'l3-set grid'; el.innerHTML = `<div class="control-group"><label>Party Name</label><input class="c-l3-name" value="${set.name||''}"></div><div class="control-group"><label>Seats</label><input type="number" class="c-l3-seats" value="${set.seats||''}"></div><div class="control-group image-upload-group"><label>Image URL or Upload</label><input class="c-l3-image" value="${set.image_data ? '[Uploaded Image]' : (set.image || '')}"><input type="file" class="c-l3-image-file" accept="image/*"></div><div class="control-group"><label>Accent Color</label><input type="color" class="c-l3-color" value="${set.color||'#cccccc'}"></div><button class="remove-btn">X</button>`; c.appendChild(el); const fileInput = el.querySelector('.c-l3-image-file'); fileInput.dataset.base64 = set.image_data || ''; fileInput.addEventListener('change', e => handleFileUpload(e, 'c-l3-image')); el.querySelector('.c-l3-image').addEventListener('input', e => handleUrlInput(e, 'c-l3-image-file')); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove()); }
-        function addBar(bar = {}) { const c = getEl('l4-bars-container'); const el = document.createElement('div'); el.className = 'bar-controls'; el.innerHTML = `<input class="c-l4-label" placeholder="Label" value="${bar.label||''}"><input type="number" class="c-l4-value" placeholder="Value" value="${bar.value||''}"><input type="color" class="c-l4-color" value="${bar.color||'#cccccc'}"><div class="control-group image-upload-group"><label>Bar BG Image</label><input class="c-l4-image" value="${bar.image_data ? '[Uploaded Image]' : (bar.image || '')}"><input type="file" class="c-l4-image-file" accept="image/*"></div><button class="remove-btn">X</button>`; c.appendChild(el); const fileInput = el.querySelector('.c-l4-image-file'); fileInput.dataset.base64 = bar.image_data || ''; fileInput.addEventListener('change', e => handleFileUpload(e, 'c-l4-image')); el.querySelector('.c-l4-image').addEventListener('input', e => handleUrlInput(e, 'c-l4-image-file')); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
-        function addSlice(slice = {}) { const c = getEl('l5-slices-container'); const el = document.createElement('div'); el.className = 'slice-controls'; el.innerHTML = `<input class="c-l5-label" placeholder="Label" value="${slice.label||''}"><input type="number" class="c-l5-value" placeholder="Value" value="${slice.value||''}"><input type="color" class="c-l5-color" value="${slice.color||'#cccccc'}"><div class="control-group image-upload-group"><label>Legend Image</label><input class="c-l5-image" value="${slice.image_data ? '[Uploaded Image]' : (slice.image || '')}"><input type="file" class="c-l5-image-file" accept="image/*"></div><button class="remove-btn">X</button>`; c.appendChild(el); const fileInput = el.querySelector('.c-l5-image-file'); fileInput.dataset.base64 = slice.image_data || ''; fileInput.addEventListener('change', e => handleFileUpload(e, 'c-l5-image')); el.querySelector('.c-l5-image').addEventListener('input', e => handleUrlInput(e, 'c-l5-image-file')); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
+        function addLeaderSet(set = {}) { const c = getEl('l3-sets-container'); const el = document.createElement('div'); el.className = 'l3-set grid'; el.innerHTML = `<div class="control-group"><label>Party Name</label><input class="c-l3-name" value="${set.name||''}"></div><div class="control-group"><label>Seats</label><input type="number" class="c-l3-seats" value="${set.seats||''}"></div><div class="control-group"><label>Image URL (Transparent PNG)</label><input class="c-l3-image" value="${set.image||''}"></div><div class="control-group"><label>Accent Color</label><input type="color" class="c-l3-color" value="${set.color||'#cccccc'}"></div><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove()); }
+        function addBar(bar = {}) { const c = getEl('l4-bars-container'); const el = document.createElement('div'); el.className = 'bar-controls'; el.innerHTML = `<input class="c-l4-label" placeholder="Label" value="${bar.label||''}"><input type="number" class="c-l4-value" placeholder="Value" value="${bar.value||''}"><input type="color" class="c-l4-color" value="${bar.color||'#cccccc'}"><input class="c-l4-image" placeholder="Image URL (for bar bg)" value="${bar.image||''}"><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
+        function addSlice(slice = {}) { const c = getEl('l5-slices-container'); const el = document.createElement('div'); el.className = 'slice-controls'; el.innerHTML = `<input class="c-l5-label" placeholder="Label" value="${slice.label||''}"><input type="number" class="c-l5-value" placeholder="Value" value="${slice.value||''}"><input type="color" class="c-l5-color" value="${slice.color||'#cccccc'}"><input class="c-l5-image" placeholder="Image URL (for legend)" value="${slice.image||''}"><button class="remove-btn">X</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
         function addHighlightSet(set = {}) { const c = getEl('l6-sets-container'); const el = document.createElement('fieldset'); el.className = 'l6-set'; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="grid"><div class="control-group"><label>Header (e.g. BREAKING)</label><input class="c-l6-header" value="${set.header||''}"></div><div class="control-group" style="display:flex; align-items:center; margin-top: auto;"><input type="checkbox" class="c-l6-show-header" ${set.show_header ? 'checked' : ''}><label>Show Header & Line</label></div></div><div class="control-group"><label>Headlines (separate with '|')</label><textarea class="c-l6-headline">${set.headline||''}</textarea></div><button class="remove-btn">Remove</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
-        function addTwoCandidateSet(set = {}) { const c = getEl('l7-sets-container'); const el = document.createElement('fieldset'); el.className = 'l7-set'; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="grid"><div class="control-group image-upload-group"><label>Main Title</label><input class="c-l7-title" value="${set.title||''}"></div><div class="control-group"><label>Source Text</label><input class="c-l7-source" value="${set.source||''}"></div><div class="control-group image-upload-group"><label>Logo URL or Upload</label><input class="c-l7-logo" value="${set.logo_data ? '[Uploaded Image]' : (set.logo||'')}"><input type="file" class="c-l7-logo-file" accept="image/*"></div></div><div class="grid" style="grid-template-columns:1fr 1fr"><fieldset><legend>Candidate 1</legend><input class="c-l7-name1" placeholder="Name" value="${(set.c1||{}).name||''}"><input class="c-l7-party1" placeholder="Party" value="${(set.c1||{}).party||''}"><input class="c-l7-constituency1" placeholder="Constituency" value="${(set.c1||{}).constituency||''}"><input class="c-l7-percentage1" placeholder="Percentage" value="${(set.c1||{}).percentage||''}"><div class="control-group image-upload-group"><label>Image URL or Upload</label><input class="c-l7-image1" value="${(set.c1||{}).image_data ? '[Uploaded Image]' : ((set.c1||{}).image||'')}"><input type="file" class="c-l7-image1-file" accept="image/*"></div><input type="color" class="c-l7-color1" value="${(set.c1||{}).color||'#007bff'}"><select class="c-l7-seal1"><option value="none">No Seal</option><option value="winner" ${((set.c1||{}).seal==='winner')?'selected':''}>Winner</option><option value="loser" ${((set.c1||{}).seal==='loser')?'selected':''}>Loser</option></select></fieldset><fieldset><legend>Candidate 2</legend><input class="c-l7-name2" placeholder="Name" value="${(set.c2||{}).name||''}"><input class="c-l7-party2" placeholder="Party" value="${(set.c2||{}).party||''}"><input class="c-l7-constituency2" placeholder="Constituency" value="${(set.c2||{}).constituency||''}"><input class="c-l7-percentage2" placeholder="Percentage" value="${(set.c2||{}).percentage||''}"><div class="control-group image-upload-group"><label>Image URL or Upload</label><input class="c-l7-image2" value="${(set.c2||{}).image_data ? '[Uploaded Image]' : ((set.c2||{}).image||'')}"><input type="file" class="c-l7-image2-file" accept="image/*"></div><input type="color" class="c-l7-color2" value="${(set.c2||{}).color||'#e83e8c'}"><select class="c-l7-seal2"><option value="none">No Seal</option><option value="winner" ${((set.c2||{}).seal==='winner')?'selected':''}>Winner</option><option value="loser" ${((set.c2||{}).seal==='loser')?'selected':''}>Loser</option></select></fieldset></div><button class="remove-btn">Remove Set</button>`; c.appendChild(el); [['.c-l7-logo-file', '.c-l7-logo', (set.logo_data||'')], ['.c-l7-image1-file', '.c-l7-image1', ((set.c1||{}).image_data||'')], ['.c-l7-image2-file', '.c-l7-image2', ((set.c2||{}).image_data||'')]].forEach(([fileCls, urlCls, data]) => { const fileInput = el.querySelector(fileCls); fileInput.dataset.base64 = data; fileInput.addEventListener('change', e => handleFileUpload(e, urlCls.substring(1))); el.querySelector(urlCls).addEventListener('input', e => handleUrlInput(e, fileCls.substring(1))); }); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
+        function addTwoCandidateSet(set = {}) { const c = getEl('l7-sets-container'); const el = document.createElement('fieldset'); el.className = 'l7-set'; el.innerHTML = `<legend>Set ${c.children.length+1}</legend><div class="grid"><div class="control-group"><label>Main Title</label><input class="c-l7-title" value="${set.title||''}"></div><div class="control-group"><label>Source Text</label><input class="c-l7-source" value="${set.source||''}"></div><div class="control-group"><label>Logo URL</label><input class="c-l7-logo" value="${set.logo||''}"></div></div><div class="grid" style="grid-template-columns:1fr 1fr"><fieldset><legend>Candidate 1</legend><input class="c-l7-name1" placeholder="Name" value="${(set.c1||{}).name||''}"><input class="c-l7-party1" placeholder="Party" value="${(set.c1||{}).party||''}"><input class="c-l7-constituency1" placeholder="Constituency" value="${(set.c1||{}).constituency||''}"><input class="c-l7-percentage1" placeholder="Percentage" value="${(set.c1||{}).percentage||''}"><input class="c-l7-image1" placeholder="Image URL" value="${(set.c1||{}).image||''}"><input type="color" class="c-l7-color1" value="${(set.c1||{}).color||'#007bff'}"><select class="c-l7-seal1"><option value="none">No Seal</option><option value="winner" ${((set.c1||{}).seal==='winner')?'selected':''}>Winner</option><option value="loser" ${((set.c1||{}).seal==='loser')?'selected':''}>Loser</option></select></fieldset><fieldset><legend>Candidate 2</legend><input class="c-l7-name2" placeholder="Name" value="${(set.c2||{}).name||''}"><input class="c-l7-party2" placeholder="Party" value="${(set.c2||{}).party||''}"><input class="c-l7-constituency2" placeholder="Constituency" value="${(set.c2||{}).constituency||''}"><input class="c-l7-percentage2" placeholder="Percentage" value="${(set.c2||{}).percentage||''}"><input class="c-l7-image2" placeholder="Image URL" value="${(set.c2||{}).image||''}"><input type="color" class="c-l7-color2" value="${(set.c2||{}).color||'#e83e8c'}"><select class="c-l7-seal2"><option value="none">No Seal</option><option value="winner" ${((set.c2||{}).seal==='winner')?'selected':''}>Winner</option><option value="loser" ${((set.c2||{}).seal==='loser')?'selected':''}>Loser</option></select></fieldset></div><button class="remove-btn">Remove Set</button>`; c.appendChild(el); el.querySelector('.remove-btn').addEventListener('click',()=>el.remove());}
         function addComparisonGroup(group = {}) { const container = getEl('l8-groups-container'); const groupEl = document.createElement('fieldset'); groupEl.className = 'l8-group'; groupEl.innerHTML = `<legend>Group ${container.children.length + 1}</legend><div class="control-group"><label>Group Label (e.g. Party Name)</label><input class="c-l8-group-label" value="${group.groupLabel || ''}"></div><div class="l8-bars-in-group-container"></div><div class="l8-group-controls"><button class="add-l8-bar-btn">Add Bar to Group</button><button class="remove-btn">Remove Group</button></div>`; container.appendChild(groupEl); const barsContainer = groupEl.querySelector('.l8-bars-in-group-container'); (group.bars || []).forEach(bar => addComparisonBar(barsContainer, bar)); groupEl.querySelector('.add-l8-bar-btn').addEventListener('click', () => addComparisonBar(barsContainer)); groupEl.querySelector('.remove-btn').addEventListener('click', () => groupEl.remove()); }
         function addComparisonBar(container, bar = {}) { const barEl = document.createElement('div'); barEl.className = 'l8-bar-controls'; barEl.innerHTML = `<input class="c-l8-label" placeholder="Bar Label" value="${bar.label || ''}"><input type="number" class="c-l8-value" placeholder="Value" value="${bar.value || ''}"><input type="color" class="c-l8-color" value="${bar.color || '#cccccc'}"><button class="remove-btn">X</button>`; container.appendChild(barEl); barEl.querySelector('.remove-btn').addEventListener('click', () => barEl.remove()); }
     </script>
